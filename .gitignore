@@ -115,3 +115,6 @@ InitTestScene*.unity*
 
 # Local backup of original Meshy models
 /ModelBackup_Original/
+
+# Unity Profiler captures
+/ProfilerCaptures/

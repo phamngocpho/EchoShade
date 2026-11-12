@@ -29,6 +29,7 @@ namespace EchoShade
         float _subUntil;
         float _tierFlashUntil;
         NhipBrain _brain;
+        int _lastTier = int.MinValue, _lastCap = int.MinValue;
 
         void Awake() { Instance = this; }
         void OnDestroy() { if (Instance == this) Instance = null; }
@@ -80,7 +81,11 @@ namespace EchoShade
             if (tierText && _brain)
             {
                 int t = _brain.Tier;
-                tierText.text = $"NHỊP cấp độ: {t} / {_brain.tierCap}";
+                if (t != _lastTier || _brain.tierCap != _lastCap)
+                {
+                    _lastTier = t; _lastCap = _brain.tierCap;
+                    tierText.text = $"NHỊP cấp độ: {t} / {_brain.tierCap}";
+                }
                 Color c = tierColors[Mathf.Clamp(t, 0, tierColors.Length - 1)];
                 if (Time.unscaledTime < _tierFlashUntil && Mathf.Repeat(Time.unscaledTime * 6f, 1f) > 0.5f) c = Color.white;
                 tierText.color = c;

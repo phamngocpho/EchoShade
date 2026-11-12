@@ -22,6 +22,10 @@ namespace EchoShade
         public Color frozenColor = new Color(0.8f, 0.8f, 0.8f);
 
         bool _paused;
+        // Chi dung lai chuoi khi gia tri hien thi thay doi (tranh cap phat bo nho moi frame).
+        int _lastTimeCs = int.MinValue, _lastRewindDs = int.MinValue, _lastCount = int.MinValue;
+        bool _lastQualified;
+        TimeDirection _lastDir;
 
         void Start()
         {
@@ -56,8 +60,14 @@ namespace EchoShade
             }
             if (fillImage) fillImage.color = c;
 
-            if (label)
+            int timeCs = Mathf.RoundToInt(clock.CurrentTime * 100f);
+            int rewindDs = Mathf.RoundToInt(clock.CurrentRewindAmount * 10f);
+            bool changed = timeCs != _lastTimeCs || rewindDs != _lastRewindDs || clock.RewindCount != _lastCount
+                || clock.CurrentRewindQualified != _lastQualified || clock.Direction != _lastDir;
+            if (label && changed)
             {
+                _lastTimeCs = timeCs; _lastRewindDs = rewindDs; _lastCount = clock.RewindCount;
+                _lastQualified = clock.CurrentRewindQualified; _lastDir = clock.Direction;
                 string rewind = clock.CurrentRewindAmount > 0f
                     ? $"   lùi: {clock.CurrentRewindAmount:0.0}s{(clock.CurrentRewindQualified ? " (hợp lệ)" : "")}"
                     : "";
