@@ -1,0 +1,103 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97379b54901caa24ca5b012769fb10c9, type: 3}
+  m_Name: LevelData_L5
+  m_EditorClassIdentifier: Assembly-CSharp::EchoShade.LevelData
+  levelIndex: 5
+  displayName: "M\xE0n 5"
+  placeName: "Th\xE1p Nh\u1ECBp"
+  rulerSeconds: 30
+  entryTier: 1
+  tierCap: 3
+  objective: "T\u1EA7ng 1: l\u1EEBa NH\u1ECAP canh nh\u1EA7m c\u1EEDa. T\u1EA7ng
+    2: d\xF9ng \u1EA2nh v\u1ECDng k\xE9o m\u1EAFt th\xE1p \u0111i, giao th\u01B0
+    v\xE0o khe th\u1EADt (G28, l\xE0n xa)."
+  startLine: "\u0110\xE2y l\xE0 th\xE1p c\u1EE7a t\xF4i. M\u1ED7i b\u01B0\u1EDBc
+    anh \u0111i trong n\xE0y, t\xF4i \u0111\u1EC1u \u0111\xE3 h\u1ECDc \u1EDF b\u1ED1n
+    n\u01A1i tr\u01B0\u1EDBc."
+  tierUpLines:
+  - 
+  - 
+  - "\u0110\xE3 ghi nh\u1EADn. T\xF4i ch\u1EB7n c\u1EEDa anh v\u1EEBa ch\u1ECDn."
+  - "T\xF4i \u0111\u1EE7 d\u1EEF li\u1EC7u \u0111\u1EC3 \u0111o\xE1n anh. B\xF3ng
+    c\u1EE7a anh s\u1EBD \u0111i tr\u01B0\u1EDBc \u2014 v\xE0 m\u1EAFt t\xF4i \u0111i
+    theo n\xF3."
+  ghostLine: "T\xF4i kh\xF3a m\u1EAFt v\xE0o b\xF3ng c\u1EE7a anh. B\xF3ng \u0111i
+    \u0111\xE2u, tia \u0111\u1ECF theo \u0111\xF3."
+  zones:
+  - name: L5_Cua
+    fromTime: 0
+    toTime: 9.4
+    hint: "H\xE0nh lang ch\u1EC9 \u0111\u1ED5i l\xE0n \u1EDF ng\xE3 ba G2. \u0110i
+      l\xE0n g\u1EA7n t\u1EDBi c\u1EEDa gi\u1EA3 G9, \u0111\u1EE9ng y\xEAn 2 gi\xE2y
+      cho NH\u1ECAP nh\xECn, r\u1ED3i l\xF9i m\u1ED9t m\u1EA1ch v\u1EC1 G2 \u2014
+      NH\u1ECAP s\u1EBD ch\u1EB7n l\xE0n g\u1EA7n. Sau \u0111\xF3 \u0111\u1ED5i sang
+      l\xE0n xa \u1EDF ng\xE3 ba."
+  - name: L5_Thang
+    fromTime: 9.4
+    toTime: 12.5
+    hint: "C\u1EA7u thang l\xEAn t\u1EA7ng 2 \u1EDF l\xE0n xa. Th\xF9ng th\u01B0
+      gi\u1EEFa \u1EDF G13."
+  - name: L5_Hall
+    fromTime: 16
+    toTime: 21
+    hint: "C\u1ED9t s\xE1ng \u1EDF G18 \u0111\xE1nh v\xE0o l\xE0n NH\u1ECAP nh\u1EDB
+      (v\xF2ng \u0111\u1ECF). \u0110i l\xE0n c\xF2n l\u1EA1i."
+  - name: L5_Mat
+    fromTime: 21
+    toTime: 30
+    hint: "\u1EDE b\u1EADc 3, tia \u0111\u1ECF G22\u201327,5 kh\xF3a v\xE0o \u1EA2nh
+      v\u1ECDng. L\xF9i m\u1ED9t m\u1EA1ch tr\xEAn t\u1EA7ng 2 (vd G27 v\u1EC1 G16)
+      \u0111\u1EC3 g\u1ECDi b\xF3ng, r\u1ED3i \u0111i l\xE0n KH\xC1C l\xE0n c\u1EE7a
+      b\xF3ng. Khe th\u1EADt \u1EDF G28 l\xE0n xa ch\u1EC9 m\u1EDF khi b\xF3ng \u0111ang
+      \u0111i."
+  marks:
+  - time: 2
+    label: "Ng\xE3 ba"
+    lane: -1
+  - time: 9
+    label: "C\u1EEDa gi\u1EA3 / c\u1EEDa th\u1EADt"
+    lane: -1
+  - time: 13
+    label: "Th\xF9ng th\u01B0 gi\u1EEFa"
+    lane: -1
+  - time: 18
+    label: "C\u1ED9t s\xE1ng"
+    lane: -1
+  - time: 22
+    label: "Tia kh\xF3a"
+    lane: -1
+  - time: 25
+    label: "\xD4 l\u1EF1a ch\u1ECDn"
+    lane: -1
+  - time: 28
+    label: "Khe th\u01B0"
+    lane: 1
+  ghostSpeedFactor: 0.6
+  solution: "T\u1EA6NG 1: 1) \u0110i l\xE0n g\u1EA7n t\u1EDBi c\u1EEDa gi\u1EA3 G9
+    (G9,2\u20139,4), \u0111\u1EE9ng y\xEAn 2 gi\xE2y. 2) L\xF9i m\u1ED9t m\u1EA1ch
+    v\u1EC1 G2 (b\u1EADc 2, NH\u1ECAP ch\u1ED1t l\xE0n g\u1EA7n, thanh ch\u1EAFn
+    chuy\u1EC3n sang l\xE0n g\u1EA7n, c\u1EEDa th\u1EADt l\xE0n xa m\u1EDF). 3) \u1EDE
+    ng\xE3 ba G2 \u0111\u1ED5i sang l\xE0n xa, \u0111i l\xEAn c\u1EA7u thang G9,5\u201312.\nT\u1EA6NG
+    2: 4) Qua th\xF9ng th\u01B0 gi\u1EEFa G13, nh\u1EB7t th\xF9ng \u1EDF G14,5. 5)
+    \u0110i l\xE0n xa qua c\u1ED9t s\xE1ng G18 (n\xF3 \u0111\xE1nh l\xE0n g\u1EA7n
+    khi ch\u01B0a nh\u1EDB g\xEC). 6) Mu\u1ED1n K\u1EBET L\u1EB6NG: \u0111\u1EB7t
+    th\xF9ng l\xEAn \xF4 v\xE0ng G25 \u1EDF l\xE0n xa r\u1ED3i nh\u1EA3y qua (Space).
+    Mu\u1ED1n K\u1EBET V\u1ECCNG: c\u1EE9 c\u1EA7m th\xF9ng ho\u1EB7c \u0111\u1EC3
+    \u1EDF ch\u1ED7 kh\xE1c, \u0111\u1EEBng ch\u1EB7n \u0111\u01B0\u1EDDng. 7) \u0110i
+    t\u1EDBi G27 r\u1ED3i l\xF9i m\u1ED9t m\u1EA1ch v\u1EC1 G16 (b\u1EADc 3 > \u1EA2nh
+    v\u1ECDng xu\u1EA5t hi\u1EC7n, \u0111i l\u1EA1i \u0111\u01B0\u1EDDng l\xE0n xa).\n8)
+    \u0110\u1ED5i sang l\xE0n g\u1EA7n, \u0111i qua G18 v\xE0 v\xF9ng tia G22\u201327,5
+    (tia kh\xF3a v\xE0o b\xF3ng \u1EDF l\xE0n xa). 9) Qua G27,6 th\xEC \u0111\u1ED5i
+    sang l\xE0n xa, t\u1EDBi khe th\u1EADt G28 v\xE0 b\u1EA5m E. B\xF3ng b\u1ECB
+    th\xF9ng ch\u1EB7n > K\u1EBFt L\u1EB7ng; b\xF3ng \u0111i h\u1EBFt \u0111\u01B0\u1EDDng
+    > K\u1EBFt V\u1ECDng."

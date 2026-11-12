@@ -9,9 +9,10 @@ namespace EchoShade
     ///
     /// LOI GIAI (tier 2): dung lai truoc t = 8 (X < 8.4), xuong lan gan (tau da di qua), di qua cho bien,
     /// de bien roi xuong lan xa trong, roi len lai lan xa truoc cua (t = 9) va dat thung len can.
-    /// Bien da nam xuong chi chan MOT diem (rong 0.5) nen van di vong duoc.
+    /// Bien da nam xuong chi chan MOT diem (rong 0.5), nam thap: nhay qua duoc (Vaultable) hoac doi lan di vong.
+    /// v2: chi nguy hiem trong luc roi; co vong do bao truoc.
     /// </summary>
-    public class HangingSign : TimelineObject
+    public class HangingSign : TimelineObject, IWarnable
     {
         public NhipBrain brain;
         public Hazard hazard;
@@ -22,13 +23,17 @@ namespace EchoShade
         public float signX = 9f, hangY = 4.6f, landY = 0.7f, beamY = 5.4f;
         public float nearZ = 0f, farZ = 2.2f;
         public float fallStart = 8f, fallEnd = 8.25f;
-        public Color[] tierLight = { new Color(0.3f, 1f, 0.5f), new Color(1f, 0.7f, 0.1f), new Color(1f, 0.05f, 0.05f) };
+        public Color[] tierLight = { new Color(0.3f, 1f, 0.5f), new Color(1f, 0.7f, 0.1f), new Color(1f, 0.5f, 0.08f) };
 
         Collider _col;
         Material[] _lightMats;
 
         public int TargetLane => brain ? brain.RecallLane(memoryZone, 1) : 1;
         public bool Armed => brain && brain.Tier >= activeFromTier;
+
+        /// <summary>v2: vong do bao truoc cho bien roi (bac 2).</summary>
+        public bool WarnVisible => Armed && clock && clock.CurrentTime < fallEnd;
+        public Vector3 WarnPosition => new Vector3(signX, 0f, TargetLane == 0 ? nearZ : farZ);
 
         void Awake()
         {

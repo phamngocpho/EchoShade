@@ -24,6 +24,8 @@ namespace EchoShade
         public float activationRadius = 1.0f;
         [Tooltip("Z cua lan Khang hoi sinh (lan gan = 0).")]
         public float spawnZ = 0f;
+        [Tooltip("Do cao mat san noi dat thung thu (man 5 tang 2).")]
+        public float floorY = 0f;
         public Renderer rim;
         public Color idleColor = new Color(0.25f, 0.25f, 0.3f);
         public Color activeColor = new Color(1f, 0.85f, 0.3f);
@@ -31,7 +33,7 @@ namespace EchoShade
         [TextArea] public string arrivalLine;
         public string completeBanner = "HOÀN THÀNH MÀN";
 
-        public Vector3 SpawnPoint => new Vector3(transform.position.x, 1.1f, spawnZ);
+        public Vector3 SpawnPoint => new Vector3(transform.position.x, floorY + 1.1f, spawnZ);
 
         Material _rimMat;
 
@@ -49,7 +51,7 @@ namespace EchoShade
             var ph = PlayerHealth.Instance;
             Transform p = ph ? ph.transform : null;
             if (!p) return;
-            if (Mathf.Abs(p.position.x - transform.position.x) <= activationRadius && p.position.y > -0.5f)
+            if (Mathf.Abs(p.position.x - transform.position.x) <= activationRadius && p.position.y > floorY - 0.5f)
             {
                 if (Active != this) Activate();
                 if (isFinal && !LevelCompleted) Complete();
@@ -68,6 +70,7 @@ namespace EchoShade
 
         void Complete()
         {
+            if (!isFinal) return;
             LevelCompleted = true;
             Debug.Log("[Level] Level complete!");
             if (HUD.Instance)
@@ -80,14 +83,25 @@ namespace EchoShade
             if (HUD.Instance && !string.IsNullOrEmpty(next)) HUD.Instance.ShowBanner(completeBanner + "\n<size=36>Sang " + DisplayName(next) + "...</size>");
         }
 
+        /// <summary>Hoan thanh man khong qua thung thu (vd: Man 5 - giao thu o khe that).</summary>
+        public static void CompleteExternally(string sceneName, string banner)
+        {
+            if (LevelCompleted) return;
+            LevelCompleted = true;
+            if (HUD.Instance && !string.IsNullOrEmpty(banner)) HUD.Instance.ShowBanner(banner);
+            GameFlow.Ensure().CompleteLevel(sceneName);
+        }
+
         /// <summary>Ten man hien thi cho nguoi choi.</summary>
-        static string DisplayName(string scene)
+        public static string DisplayName(string scene)
         {
             switch (scene)
             {
-                case "Level1": return "Màn 1";
-                case "Level2": return "Màn 2";
-                case "Level3": return "Màn 3: Tháp Nhịp";
+                case "Level1": return "Màn 1: Sân thượng phố Cũ";
+                case "Level2": return "Màn 2: Ga treo";
+                case "Level3": return "Màn 3: Bến cầu nâng";
+                case "Level4": return "Màn 4: Xưởng Lịch";
+                case "Level5": return "Màn 5: Tháp Nhịp";
                 case "End": return "hồi kết";
                 default: return scene;
             }

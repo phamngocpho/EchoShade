@@ -5,49 +5,66 @@ using UnityEngine;
 namespace EchoShade
 {
     /// <summary>
-    /// Mot dong trong "bang ghi nho" cua NHIP. Moi lan Khang tua hop le, NHIP ghi lai:
-    /// khu vuc, lan Khang dung, vi tri dung (diem quay dau), co vat neo nao da duoc dat chua.
-    /// Man 1 chi ghi; cac man sau se dung bang nay de doan truoc hanh vi cua Khang.
+    /// Mot dong trong "bang nho" cua NHIP (v2 muc 3.4). Moi lan Khang tua hop le, NHIP ghi cho moi vung
+    /// ma doan vua bi tua di qua: lan Khang chu yeu dung, cho dung im lau nhat va thoi gian dung, vat neo trong vung.
+    /// (Cot "vat dang cam" cua v2 khong duoc lam vi khong man nao doc no.)
     /// </summary>
     [Serializable]
     public class NhipMemoryEntry
     {
         public string zone;
         public int lane;          // 0 = gan, 1 = xa
-        public float stopX;       // vi tri X noi Khang quay dau
-        public float stopTime;    // thoi gian man tai diem quay dau
-        public bool anchorPlaced; // luc do co vat neo nao da duoc dat xuong chua
+        public float stopX;       // vi tri X noi Khang dung im lau nhat (hoac quay dau)
+        public float stopTime;    // thoi gian man tai cho dung
+        public float stopSeconds; // so giay thuc dung im o do
+        public bool anchorPlaced; // co vat neo (do Khang dat) trong vung khong
+        public float anchorX;
         public int rewindIndex;   // lan tua hop le thu may
     }
 
     /// <summary>
-    /// "Nao" cua bot NHIP: cap do (tier).
-    ///  - Tier bat dau = entryTier (cap khi vao man), toi da = tierCap (Man 1: cap = 1).
-    ///  - Moi lan tua hop le (LevelClock.OnValidRewind) ma Khang da tung vuot qua
-    ///    tierUpRequiresTimeReached (Man 1: t = 6 s, luc cang may lay moc) => tier +1.
-    ///    Y nghia: NHIP "nho" la Khang da quay lai sua chuyen, nen lan sau no den som hon.
-    ///  - Khang het mau va hoi sinh => tier -1 nhung khong duoi entryTier.
+    /// "Nao" cua bot NHIP: bac (tier) + bang nho. Khong biet gi ve tung man; man doc bac va bang nho.
+    ///  - Bac luc vao man = entryTier, tran = tierCap (LevelData).
+    ///  - Moi lan tua hop le (LevelClock.OnValidRewind): ghi bang nho tu doan vua bi tua (KhangTrail), +1 bac.
+    ///  - Het mau / tu ve thung thu: bac -1 (khong duoi entryTier) va QUEN cac dong cua lan tua gan nhat.
+    ///  Bac 0 xanh: tuan tra theo lich. Bac 1 vang: don den som ~1 giay man. Bac 2 cam: phuc kich 1 diem
+    ///  theo dong ghi gan nhat (co vong do bao truoc). Bac 3 do: goi Anh vong (GhostPlayer), man 5 them tia khoa.
     /// </summary>
     [DefaultExecutionOrder(-90)]
     public class NhipBrain : MonoBehaviour
     {
         public static NhipBrain Instance { get; private set; }
 
+        public static readonly Color[] TierColors =
+        {
+            new Color(0.25f, 0.75f, 1f),   // 0 xanh
+            new Color(1f, 0.88f, 0.2f),    // 1 vang
+            new Color(1f, 0.5f, 0.08f),    // 2 cam
+            new Color(1f, 0.08f, 0.06f),   // 3 do
+        };
+        public static Color TierColor(int t) => TierColors[Mathf.Clamp(t, 0, TierColors.Length - 1)];
+        public static string TierColorName(int t) => t <= 0 ? "xanh" : t == 1 ? "vàng" : t == 2 ? "cam" : "đỏ";
+
         public LevelClock clock;
         public KhangController khang;
         public string zoneName = "Level1";
         public int entryTier = 0;
         public int tierCap = 1;
-        [Tooltip("Chi tang tier khi Khang da tung dat toi thoi diem nay (giay) truoc khi tua.")]
+        [Tooltip("v1: chi tang bac khi Khang da tung toi thoi diem nay. v2 dat 0.")]
         public float tierUpRequiresTimeReached = 0f;
+        [HideInInspector] public LevelData.Zone[] zones;
 
         public int Tier { get; private set; }
-        /// <summary>Tier cao nhat da dat trong man nay (GameFlow cong don qua cac man).</summary>
         public int MaxTierReached { get; private set; }
-        /// <summary>(tierCu, tierMoi)</summary>
+        public int ForgetCount { get; private set; }
+        /// <summary>(bacCu, bacMoi)</summary>
         public event Action<int, int> OnTierChanged;
+        /// <summary>Sau khi da ghi bang nho + doi bac cho mot lan tua hop le. Tham so = doan di tien vua bi tua.</summary>
+        public event Action<List<TrailSample>> OnRewindProcessed;
+        /// <summary>Khi quen (het mau / ve thung thu).</summary>
+        public event Action OnForget;
 
-        [Header("Bang ghi nho (chi doc)")]
+        [Header("Bang nho (chi doc)")]
         public List<NhipMemoryEntry> memory = new List<NhipMemoryEntry>();
 
         void Awake()
@@ -57,15 +74,13 @@ namespace EchoShade
             MaxTierReached = Tier;
         }
 
-        // ---- Quan sat lan theo khu vuc (Man 2+) ----
-        // NHIP theo doi Khang dung lan nao trong mot khu vuc thoi gian (vd: Man 2, t = 4..8).
-        // Quan sat chi la "tam"; khi Khang tua hop le, NHIP CHOT quan sat vao bang ghi nho.
-        // Nghia la: NHIP nho dong thoi gian ma Khang vua xoa, va dung no de phuc kich o lan sau.
-        readonly Dictionary<string, int> _observedLane = new Dictionary<string, int>();
+        public void ResetTierToEntry() { Tier = entryTier; MaxTierReached = Tier; }
 
+        // ---- Quan sat lan theo khu vuc (Man 2 - NhipLaneWatcher, giu tu v1) ----
+        readonly Dictionary<string, int> _observedLane = new Dictionary<string, int>();
         public void ObserveLane(string zone, int lane) { _observedLane[zone] = lane; }
 
-        /// <summary>Lan Khang dung gan nhat trong khu vuc (lay tu bang ghi nho), mac dinh = fallback.</summary>
+        /// <summary>Lan Khang dung trong vung o dong ghi gan nhat; khong co thi = fallback.</summary>
         public int RecallLane(string zone, int fallback)
         {
             var e = RecallLatest(zone);
@@ -87,39 +102,52 @@ namespace EchoShade
 
         void HandleValidRewind(int count)
         {
-            Remember(count);
+            var trail = KhangTrail.Instance;
+            var seg = trail ? trail.ExtractRewoundSegment(clock.LastRewindFrom, clock.LastRewindTo) : new List<TrailSample>();
+            RecordZones(seg, count);
             foreach (var kv in _observedLane)
-            {
-                memory.Add(new NhipMemoryEntry
-                {
-                    zone = kv.Key, lane = kv.Value,
-                    stopX = khang ? khang.transform.position.x : 0f,
-                    stopTime = clock ? clock.CurrentTime : 0f,
-                    anchorPlaced = false, rewindIndex = count
-                });
-                Debug.Log($"[NHIP] Ghi nho khu {kv.Key}: Khang da di lan {(kv.Value == 0 ? "GAN" : "XA")}");
-            }
+                AddEntry(new NhipMemoryEntry { zone = kv.Key, lane = kv.Value, stopX = khang ? khang.transform.position.x : 0f, stopTime = clock.CurrentTime, rewindIndex = count });
             _observedLane.Clear();
             if (clock.MaxTimeReached >= tierUpRequiresTimeReached) RaiseTier();
-            else Debug.Log($"[NHIP] Tua hop le #{count} nhung chua qua moc t={tierUpRequiresTimeReached}s: khong tang cap.");
+            OnRewindProcessed?.Invoke(seg);
         }
 
-        void Remember(int count)
+        void RecordZones(List<TrailSample> seg, int count)
         {
-            bool anchor = false;
-            foreach (var it in HoldableItem.All)
-                if (it && it.State == HoldableItem.ItemState.Anchored && it.AnchorTime >= 0f) { anchor = true; break; }
-            var e = new NhipMemoryEntry
+            if (zones == null || seg.Count == 0) return;
+            foreach (var z in zones)
             {
-                zone = zoneName,
-                lane = khang ? (int)khang.CurrentLane : 0,
-                stopX = khang ? khang.transform.position.x : 0f,
-                stopTime = clock ? clock.CurrentTime : 0f,
-                anchorPlaced = anchor,
-                rewindIndex = count
-            };
+                int near = 0, far = 0;
+                float bestStill = 0f, still = 0f, stillX = 0f, stillT = 0f, bestX = 0f, bestT = 0f;
+                for (int i = 0; i < seg.Count; i++)
+                {
+                    var s = seg[i];
+                    if (s.t < z.fromTime || s.t > z.toTime) { still = 0f; continue; }
+                    if (s.lane == 0) near++; else far++;
+                    if (i > 0 && (s.pos - seg[i - 1].pos).sqrMagnitude < 1e-6f)
+                    {
+                        if (still == 0f) { stillX = s.pos.x; stillT = s.t; }
+                        still += s.rt - seg[i - 1].rt;
+                        if (still > bestStill) { bestStill = still; bestX = stillX; bestT = stillT; }
+                    }
+                    else still = 0f;
+                }
+                if (near + far < 15) continue; // it hon ~0,5 s trong vung: khong du de ghi
+                var e = new NhipMemoryEntry { zone = z.name, lane = far > near ? 1 : 0, stopSeconds = bestStill, stopX = bestX, stopTime = bestT, rewindIndex = count };
+                foreach (var it in HoldableItem.All)
+                {
+                    if (!it || it.State != HoldableItem.ItemState.Anchored || it.AnchorTime < 0f || !clock) continue;
+                    float at = clock.XToTime(it.transform.position.x);
+                    if (at >= z.fromTime && at <= z.toTime) { e.anchorPlaced = true; e.anchorX = it.transform.position.x; }
+                }
+                AddEntry(e);
+            }
+        }
+
+        void AddEntry(NhipMemoryEntry e)
+        {
             memory.Add(e);
-            Debug.Log($"[NHIP] Ghi nho: zone={e.zone} lane={e.lane} stopX={e.stopX:0.0} t={e.stopTime:0.00} anchor={e.anchorPlaced}");
+            Debug.Log($"[NHIP] Ghi nho #{e.rewindIndex}: vung={e.zone} lan={(e.lane == 0 ? "GAN" : "XA")} dung={e.stopSeconds:0.0}s@x={e.stopX:0.0} neo={e.anchorPlaced}");
         }
 
         public NhipMemoryEntry RecallLatest(string zone)
@@ -134,10 +162,23 @@ namespace EchoShade
             SetTier(Tier + 1);
         }
 
-        /// <summary>Goi khi Khang het mau va hoi sinh o hom thu.</summary>
+        /// <summary>Het mau / tu ve thung thu: bac -1 (khong duoi bac vao man).</summary>
         public void LowerTierOnRespawn()
         {
             SetTier(Mathf.Max(entryTier, Tier - 1));
+        }
+
+        /// <summary>Quen cac dong cua lan tua gan nhat (quyet dinh NHIP vua hoc).</summary>
+        public void ForgetLatest()
+        {
+            if (memory.Count > 0)
+            {
+                int last = memory[memory.Count - 1].rewindIndex;
+                int n = memory.RemoveAll(m => m.rewindIndex == last);
+                Debug.Log($"[NHIP] Quen {n} dong cua lan tua #{last}");
+            }
+            ForgetCount++;
+            OnForget?.Invoke();
         }
 
         void SetTier(int t)
@@ -146,8 +187,11 @@ namespace EchoShade
             int old = Tier;
             Tier = t;
             if (Tier > MaxTierReached) MaxTierReached = Tier;
-            Debug.Log($"[NHIP] Tier {old} -> {Tier}");
+            Debug.Log($"[NHIP] Bac {old} -> {Tier}");
             OnTierChanged?.Invoke(old, Tier);
         }
+
+        /// <summary>Chi cho test/cong cu: dat bac truc tiep.</summary>
+        public void DebugSetTier(int t) => SetTier(Mathf.Clamp(t, 0, 3));
     }
 }

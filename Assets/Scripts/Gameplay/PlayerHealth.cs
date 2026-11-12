@@ -4,12 +4,12 @@ using UnityEngine;
 namespace EchoShade
 {
     /// <summary>
-    /// Mau cua Khang (mac dinh 3).
-    ///  - Cham cang may / bi tam ton roi trung / roi khoi man = -1 HP.
-    ///  - Roi khoi man: -1 HP va ve hom thu (checkpoint) dang kich hoat.
-    ///  - Het mau: ve hom thu gan nhat, hoi day mau, NHIP tier -1 (khong duoi tier luc vao man).
-    ///  - Ve hom thu = dat lai thoi gian theo vi tri hom thu (vi thoi gian = ham cua X).
-    ///    Vat neo da dat van giu nguyen.
+    /// Mau cua Khang (mac dinh 3) - v2 muc 3.3.
+    ///  - Mat 1 mau khi: bi tau can, vat roi, roi khoi man, tia do, cang / vat tha cua NHIP. Anh vong KHONG gay mat mau.
+    ///  - Roi khoi man: -1 mau va ve thung thu dang kich hoat.
+    ///  - Het mau (hoac phim R - tu ve thung thu): ve thung thu gan nhat, day mau, NHIP bac -1
+    ///    (khong duoi bac vao man) va QUEN quyet dinh vua hoc gan nhat. Anh vong bien mat.
+    ///  - Ve thung thu = dat lai thoi gian theo vi tri thung thu. Vat neo da dat van giu nguyen.
     /// </summary>
     [RequireComponent(typeof(KhangController))]
     public class PlayerHealth : MonoBehaviour
@@ -25,6 +25,8 @@ namespace EchoShade
         public int Deaths { get; private set; }
         public event Action<int> OnHPChanged;
         public event Action OnRespawned;
+        /// <summary>(nguon, thoi gian man luc trung don)</summary>
+        public event Action<string, float> OnDamaged;
 
         KhangController _khang;
         CharacterController _cc;
@@ -54,26 +56,29 @@ namespace EchoShade
         /// <summary>Tru mau. respawnToCheckpoint = true khi roi khoi man (luon ap dung, bo qua bat tu).</summary>
         public bool Damage(int amount, string source, bool respawnToCheckpoint = false)
         {
+            if (Mailbox.LevelCompleted) return false;
             if (IsInvulnerable && !respawnToCheckpoint) return false;
             HP = Mathf.Max(0, HP - amount);
             _invUntil = Time.time + invulnerableTime;
             Debug.Log($"[Khang] -{amount} HP ({source}). HP = {HP}");
             OnHPChanged?.Invoke(HP);
+            OnDamaged?.Invoke(source, clock ? clock.CurrentTime : 0f);
 
-            if (HP <= 0)
-            {
-                Deaths++;
-                HP = maxHP;
-                if (brain) brain.LowerTierOnRespawn();
-                Respawn();
-                if (HUD.Instance) HUD.Instance.ShowSubtitle("Khang kiệt sức... quay về hòm thư.", 3f, false);
-                OnHPChanged?.Invoke(HP);
-            }
-            else if (respawnToCheckpoint)
-            {
-                Respawn();
-            }
+            if (HP <= 0) ReturnToMailbox(false);
+            else if (respawnToCheckpoint) Respawn();
             return true;
+        }
+
+        /// <summary>Het mau (voluntary=false) hoac phim R (voluntary=true): ve thung thu voi cung cai gia.</summary>
+        public void ReturnToMailbox(bool voluntary)
+        {
+            Deaths++;
+            HP = maxHP;
+            if (brain) { brain.LowerTierOnRespawn(); brain.ForgetLatest(); }
+            Respawn();
+            if (HUD.Instance)
+                HUD.Instance.ShowSubtitle(voluntary ? "Khang quay về hòm thư. NHỊP quên điều vừa học." : "Khang kiệt sức... quay về hòm thư. NHỊP quên điều vừa học.", 3f, false);
+            OnHPChanged?.Invoke(HP);
         }
 
         public void Respawn()
@@ -82,6 +87,8 @@ namespace EchoShade
             Vector3 p = m ? m.SpawnPoint : _startPos;
             _khang.Teleport(p);
             if (clock) clock.ResetTracking();
+            if (KhangTrail.Instance) KhangTrail.Instance.Clear();
+            _invUntil = Time.time + invulnerableTime;
             OnRespawned?.Invoke();
         }
     }

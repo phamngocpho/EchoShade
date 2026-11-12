@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97379b54901caa24ca5b012769fb10c9, type: 3}
+  m_Name: LevelData_L3
+  m_EditorClassIdentifier: Assembly-CSharp::EchoShade.LevelData
+  levelIndex: 3
+  displayName: "M\xE0n 3"
+  placeName: "B\u1EBFn c\u1EA7u n\xE2ng"
+  rulerSeconds: 16
+  entryTier: 0
+  tierCap: 2
+  objective: "\u0110\u1EB7t th\xF9ng l\xEAn b\xE0n \u0111\u1EA1p t\u1EA3i (G6, l\xE0n
+    xa) \u0111\u1EC3 h\u1EA1 c\u1EA7u, qua k\xEAnh, giao th\u01B0 \u1EDF G16."
+  startLine: "B\u1EBFn n\xE0y ch\u1EA1y theo l\u1ECBch c\u1EA9u. C\u1EA7u ch\u1EC9
+    h\u1EA1 khi c\xF3 h\xE0ng n\u1EB7ng \u2014 v\xE0 t\xF4i \u0111ang \u0111\u1EBFm
+    t\u1EEBng b\u01B0\u1EDBc c\u1EE7a anh."
+  tierUpLines:
+  - 
+  - "\u0110\xE3 ghi nh\u1EADn. T\xF4i nh\u1EDB anh \u0111i l\xE0n n\xE0o qua c\u1EA7u."
+  - "L\u1EA7n sau t\xF4i treo m\xF3c \u0111\xFAng ch\u1ED7 anh s\u1EBD \u0111\u1EE9ng."
+  ghostLine: 
+  zones:
+  - name: L3_Ben
+    fromTime: 0
+    toTime: 9.9
+    hint: "C\u1EA7u c\u1EA7n m\u1ED9t th\u1EE9 n\u1EB7ng: mang th\xF9ng \u1EDF G3
+      sang l\xE0n xa v\xE0 \u0111\u1EB7t l\xEAn b\xE0n \u0111\u1EA1p t\u1EA3i \u1EDF
+      G6."
+  - name: L3_Bridge
+    fromTime: 10
+    toTime: 14
+    hint: "M\xF3c c\u1EA9u r\u01A1i xu\u1ED1ng l\xE0n NH\u1ECAP nh\u1EDB (v\xF2ng
+      \u0111\u1ECF \u1EDF G12,5). Container nh\u1EA5c l\xEAn \u1EDF G11,5 \u2014
+      qua c\u1EA7u r\u1ED3i \u0111\u1ED5i sang l\xE0n kia \u0111\u1EC3 tr\xE1nh m\xF3c."
+  - name: L3_Cuoi
+    fromTime: 14
+    toTime: 16
+    hint: "Th\xF9ng th\u01B0 cu\u1ED1i \u1EDF G16."
+  marks:
+  - time: 3
+    label: "Th\xF9ng"
+    lane: 0
+  - time: 6
+    label: "B\xE0n \u0111\u1EA1p t\u1EA3i"
+    lane: 1
+  - time: 10
+    label: "C\u1EA7u"
+    lane: 0
+  - time: 11.5
+    label: "Container nh\u1EA5c"
+    lane: 1
+  - time: 12.5
+    label: "M\xF3c c\u1EA9u"
+    lane: -1
+  - time: 16
+    label: "Th\xF9ng th\u01B0"
+    lane: -1
+  ghostSpeedFactor: 0.6
+  solution: "1) Nh\u1EB7t th\xF9ng \u1EDF G3 (l\xE0n g\u1EA7n, E).\n2) \u0110\u1ED5i
+    sang l\xE0n xa (W), \u0111\u1EE9ng \u1EDF G5,6 v\xE0 \u0111\u1EB7t th\xF9ng (E)
+    l\xEAn b\xE0n \u0111\u1EA1p t\u1EA3i G6 \u2014 c\u1EA7u n\xE2ng h\u1EA1 xu\u1ED1ng.\n3)
+    V\u1EC1 l\xE0n g\u1EA7n (S), \u0111i qua c\u1EA7u G10\u2013G14. L\xE0n xa b\u1ECB
+    container ch\u1EB7n t\u1EDBi G11,5.\n4) N\u1EBFu NH\u1ECAP \u0111\xE3 l\xEAn
+    b\u1EADc 2 (v\xF2ng \u0111\u1ECF \u1EDF G12,5): qua kh\u1ECFi G11,6 th\xEC \u0111\u1ED5i
+    sang l\xE0n c\xF2n l\u1EA1i \u0111\u1EC3 n\xE9 m\xF3c c\u1EA9u.\n5) T\u1EDBi
+    th\xF9ng th\u01B0 G16."

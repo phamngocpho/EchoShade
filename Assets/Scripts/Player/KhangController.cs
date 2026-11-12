@@ -10,6 +10,9 @@ namespace EchoShade
     ///  - Nhay chi doi Y      => thoi gian dung. Mac dinh khong cho dieu khien X tren khong
     ///    (allowAirControl = false) de "nhay = thoi gian dung" dung voi kich ban.
     ///  - Trong luc doi lan cung khoa di ngang.
+    ///  - NHAY QUA VAT THAP (v2: "nhay qua thung", "bien nam thap nhay qua duoc"): bam Space khi dang sat mot vat neo
+    ///    hoac vat co Vaultable o phia truoc cung lan => Khang vuot qua theo vong cung. X thay doi nen thoi gian
+    ///    chay dung theo luat. Nhay tai cho (khong co vat truoc mat) thi thoi gian dung.
     /// </summary>
     [RequireComponent(typeof(CharacterController))]
     public class KhangController : MonoBehaviour
@@ -34,7 +37,14 @@ namespace EchoShade
         [Tooltip("Neu co, X bi kep trong [levelStartX, levelEndX] cua dong ho.")]
         public LevelClock clock;
 
+        [Header("Vault")]
+        public float vaultReach = 0.85f;
+        public float vaultMaxHeight = 1.25f;
+        public float vaultDuration = 0.5f;
+
         public Lane CurrentLane { get; private set; } = Lane.Near;
+        public bool IsVaulting { get; private set; }
+        public int VaultCount { get; private set; }
         public bool IsSwitchingLane => _laneT < 1f;
         public bool IsGrounded => _cc.isGrounded;
         /// <summary>+1 nhin phai, -1 nhin trai (dung de dat vat phia truoc).</summary>
@@ -57,7 +67,7 @@ namespace EchoShade
 
         void Update()
         {
-            if (Time.timeScale == 0f || !_cc.enabled) return;
+            if (Time.timeScale == 0f || !_cc.enabled || IsVaulting) return;
             float dt = Time.deltaTime;
             Vector3 move = Vector3.zero;
 
@@ -81,7 +91,11 @@ namespace EchoShade
             if (_cc.isGrounded)
             {
                 if (_vy < 0f) _vy = -2f;
-                if (KhangInput.Jump && !IsSwitchingLane) _vy = Mathf.Sqrt(jumpHeight * -2f * gravity);
+                if (KhangInput.Jump && !IsSwitchingLane)
+                {
+                    if (TryVault()) return;
+                    _vy = Mathf.Sqrt(jumpHeight * -2f * gravity);
+                }
             }
             _vy += gravity * dt;
             move.y = _vy * dt;
@@ -108,9 +122,58 @@ namespace EchoShade
             _cc.Move(move);
         }
 
+        /// <summary>Tim vat thap ngay truoc mat (cung lan) va vuot qua. Tra ve true neu bat dau vuot.</summary>
+        public bool TryVault()
+        {
+            if (IsVaulting || IsSwitchingLane) return false;
+            float feet = transform.position.y - _cc.height * 0.5f;
+            float x = transform.position.x, dir = Facing;
+            Bounds best = default; bool found = false; float bestD = float.MaxValue;
+            void Consider(Bounds b)
+            {
+                if (Mathf.Abs(b.center.z - transform.position.z) > 0.8f) return;
+                if (b.max.y - feet > vaultMaxHeight || b.max.y < feet + 0.1f) return;
+                float near = dir > 0 ? b.min.x - (x + _cc.radius) : (x - _cc.radius) - b.max.x;
+                if (near < -0.25f || near > vaultReach) return;
+                if (near < bestD) { bestD = near; best = b; found = true; }
+            }
+            foreach (var it in HoldableItem.All)
+                if (it && it.vaultable && it.State == HoldableItem.ItemState.Anchored && !it.IsReturning) Consider(it.WorldBounds);
+            foreach (var v in Vaultable.All) if (v && v.isActiveAndEnabled && v.CanVault) Consider(v.Bounds);
+            if (!found) return false;
+            float land = dir > 0 ? best.max.x + _cc.radius + 0.15f : best.min.x - _cc.radius - 0.15f;
+            if (clock) land = Mathf.Clamp(land, clock.levelStartX, clock.levelEndX);
+            var g = GhostPlayer.Instance;
+            if (g && g.Active && Mathf.Abs(g.Position.x - land) < 0.7f && Mathf.Abs(g.Position.z - transform.position.z) < 0.9f) return false;
+            StartCoroutine(Vault(land, best.max.y - feet));
+            return true;
+        }
+
+        System.Collections.IEnumerator Vault(float landX, float h)
+        {
+            IsVaulting = true; VaultCount++;
+            Vector3 a = transform.position;
+            Vector3 b = new Vector3(landX, a.y, _laneToZ);
+            _cc.enabled = false;
+            for (float u = 0f; u < 1f;)
+            {
+                u = Mathf.Min(1f, u + Time.deltaTime / vaultDuration);
+                Vector3 p = Vector3.Lerp(a, b, u);
+                p.y = a.y + Mathf.Sin(u * Mathf.PI) * (h + 0.35f);
+                transform.position = p;
+                yield return null;
+            }
+            transform.position = b;
+            _cc.enabled = true;
+            _vy = -2f;
+            IsVaulting = false;
+        }
+
         /// <summary>Dich chuyen tuc thi (hoi sinh, ket thuc di cap). Goi LevelClock.ResetTracking() neu khong muon tinh la di chuyen.</summary>
         public void Teleport(Vector3 pos)
         {
+            StopAllCoroutines();
+            IsVaulting = false;
             _cc.enabled = false;
             transform.position = pos;
             _cc.enabled = true;

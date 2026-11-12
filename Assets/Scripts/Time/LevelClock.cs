@@ -17,9 +17,12 @@ namespace EchoShade
     ///  - Di sang trai  = thoi gian tua nguoc (Backward).
     ///  - Dung yen / nhay / doi lan = X khong doi => thoi gian dung (Frozen).
     ///
-    /// Tua hop le / Valid rewind:
-    ///  - Lui lien tuc it nhat minValidRewind giay (mac dinh 2 s) roi di tien tro lai.
-    ///  - Moi lan hop le: RewindCount++ va ban su kien OnValidRewind (sau nay dung de nang cap bot NHIP).
+    /// Tua hop le / Valid rewind (kich ban v2, muc 3.3 + 12.4 + 12.6):
+    ///  - Lui lien tuc it nhat minValidRewind giay man (mac dinh 2 s) roi di tien tro lai.
+    ///  - Doi lan hoac nhay giua chung KHONG dat lai chuoi lui. Dung im qua freezeResetSeconds (1 s thuc) thi dat lai.
+    ///  - Sau khi hoi sinh o thung thu: chuoi lui chi duoc tinh khi Khang da di tien it nhat mot lan.
+    ///  - Moi lan hop le: RewindCount++, LastRewindFrom/To duoc ghi, roi ban OnValidRewind (NhipBrain len bac).
+    ///  - Hoi vi (vat tu bay ve diem goc) khong di qua dong ho nen khong bao gio tinh la tua.
     /// </summary>
     [DefaultExecutionOrder(-100)] // cap nhat truoc moi TimelineObject
     public class LevelClock : MonoBehaviour
@@ -38,8 +41,10 @@ namespace EchoShade
         [Header("Rewind detection")]
         [Tooltip("So giay phai lui lien tuc de tinh la 1 lan tua hop le.")]
         public float minValidRewind = 2f;
-        [Tooltip("Neu bat: dung yen giua chung se lam mat chuoi lui. Mac dinh tat: dung yen chi tam dung chuoi.")]
+        [Tooltip("Neu bat: dung yen giua chung se lam mat chuoi lui ngay lap tuc.")]
         public bool freezeBreaksRewind = false;
+        [Tooltip("v2: dung im lau hon so giay THUC nay trong luc dang lui thi chuoi lui bi dat lai.")]
+        public float freezeResetSeconds = 1f;
         [Tooltip("Thay doi thoi gian nho hon nguong nay (giay) duoc xem la dung yen.")]
         public float epsilon = 0.0005f;
 
@@ -53,7 +58,10 @@ namespace EchoShade
         public float MaxTimeReached { get; private set; }
         /// <summary>So giay da lui trong chuoi hien tai (de UI hien thi).</summary>
         public float CurrentRewindAmount => _rewinding ? Mathf.Max(0f, _rewindStartTime - CurrentTime) : 0f;
-        public bool CurrentRewindQualified => _rewinding && CurrentRewindAmount >= minValidRewind;
+        public bool CurrentRewindQualified => _rewinding && _forwardSinceReset && CurrentRewindAmount >= minValidRewind;
+        /// <summary>Lan tua hop le gan nhat: tu thoi diem (xa nhat) ve thoi diem quay dau.</summary>
+        public float LastRewindFrom { get; private set; } = -1f;
+        public float LastRewindTo { get; private set; } = -1f;
 
         /// <summary>Ban ra khi co 1 lan tua hop le. Tham so = RewindCount moi.</summary>
         public event Action<int> OnValidRewind;
@@ -62,6 +70,8 @@ namespace EchoShade
 
         bool _rewinding;
         float _rewindStartTime;
+        bool _forwardSinceReset = true;
+        float _frozenFor;
 
         void Awake()
         {
@@ -77,6 +87,7 @@ namespace EchoShade
         public void ResetTracking()
         {
             _rewinding = false;
+            _forwardSinceReset = false; // v2 12.6: chua di tien sau hoi sinh thi lui khong tinh
             CurrentTime = XToTime(player ? player.position.x : levelStartX);
             MaxTimeReached = CurrentTime;
             Direction = TimeDirection.Frozen;
@@ -105,6 +116,19 @@ namespace EchoShade
             Tick(XToTime(player.position.x));
         }
 
+        void FinishChain(float endTime)
+        {
+            float amount = _rewindStartTime - endTime;
+            _rewinding = false;
+            if (amount >= minValidRewind && _forwardSinceReset)
+            {
+                RewindCount++;
+                LastRewindFrom = _rewindStartTime;
+                LastRewindTo = endTime;
+                OnValidRewind?.Invoke(RewindCount);
+            }
+        }
+
         void Tick(float newTime)
         {
             float prev = CurrentTime;
@@ -126,24 +150,21 @@ namespace EchoShade
                     break;
 
                 case TimeDirection.Forward:
-                    if (_rewinding)
-                    {
-                        // Ket thuc chuoi lui bang viec di tien => kiem tra hop le
-                        float amount = _rewindStartTime - prev;
-                        _rewinding = false;
-                        if (amount >= minValidRewind)
-                        {
-                            RewindCount++;
-                            OnValidRewind?.Invoke(RewindCount);
-                        }
-                    }
+                    if (_rewinding) FinishChain(prev); // ket thuc chuoi lui bang viec di tien => kiem tra hop le
+                    _forwardSinceReset = true;
                     break;
 
                 case TimeDirection.Frozen:
-                    if (_rewinding && freezeBreaksRewind) _rewinding = false;
+                    if (_rewinding)
+                    {
+                        _frozenFor += Time.deltaTime; // tam dung (timeScale 0) khong tinh
+                        // Dung im qua lau (hoac freezeBreaksRewind) => chot chuoi lui o day (van tinh neu du dai)
+                        if (freezeBreaksRewind || _frozenFor > freezeResetSeconds) FinishChain(prev);
+                    }
                     break;
             }
 
+            if (dir != TimeDirection.Frozen) _frozenFor = 0f;
             Direction = dir;
             if (dir != TimeDirection.Frozen)
             {

@@ -8,7 +8,7 @@ namespace EchoShade
     /// Vi tri = ham thuan cua (thoi gian man, tier NHIP):
     ///   Tier 0: t = 4.0 -> 7.0   Tier 1: 3.4 -> 6.6 (som hon)   Tier 2: 3.2 -> 6.2 (som + nhanh hon)
     /// Ngoai cua so thoi gian tau an di. Dung tren lan gan khi tau quet qua = -1 HP (Hazard).
-    /// Den tau doi mau theo tier (xanh -> vang -> do) de nguoi cham thay NHIP nang cap.
+    /// Den tau doi mau theo bac (xanh -> vang -> cam, v2) de nguoi cham thay NHIP nang cap.
     /// </summary>
     public class TrainCar : TimelineObject
     {
@@ -25,7 +25,7 @@ namespace EchoShade
         {
             new TierRun { startTime = 4.0f, endTime = 7.0f, lightColor = new Color(0.3f, 1f, 0.6f), glow = 2f },
             new TierRun { startTime = 3.4f, endTime = 6.6f, lightColor = new Color(1f, 0.75f, 0.1f), glow = 4f },
-            new TierRun { startTime = 3.2f, endTime = 6.2f, lightColor = new Color(1f, 0.1f, 0.05f), glow = 8f },
+            new TierRun { startTime = 3.2f, endTime = 6.2f, lightColor = new Color(1f, 0.5f, 0.08f), glow = 8f },
         };
 
         Renderer[] _renderers;

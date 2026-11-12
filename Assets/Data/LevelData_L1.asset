@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97379b54901caa24ca5b012769fb10c9, type: 3}
+  m_Name: LevelData_L1
+  m_EditorClassIdentifier: Assembly-CSharp::EchoShade.LevelData
+  levelIndex: 1
+  displayName: "M\xE0n 1"
+  placeName: "S\xE2n th\u01B0\u1EE3ng ph\u1ED1 C\u0169"
+  rulerSeconds: 10
+  entryTier: 0
+  tierCap: 1
+  objective: "Mang m\xF3c qua h\u1EBBm tr\u01B0\u1EDBc khi c\xE0ng m\xE1y l\u1EA5y
+    m\u1EA5t."
+  startLine: "Ca giao \u0111\xE3 tr\u1EC5. L\u1ECBch kh\xF4ng c\xF3 ch\u1ED7 cho
+    th\u01B0 \u0111\u1EBFn mu\u1ED9n. H\xE3y quay l\u1EA1i v\u1EA1ch b\u1EAFt \u0111\u1EA7u."
+  tierUpLines:
+  - 
+  - "\u0110\xE3 ghi nh\u1EADn. L\u1EA7n n\xE0y c\xE0ng m\xE1y s\u1EBD \u0111\u1EBFn
+    s\u1EDBm h\u01A1n."
+  ghostLine: 
+  zones:
+  - name: L1_Ton
+    fromTime: 0
+    toTime: 2.4
+    hint: "T\u1EA5m t\xF4n r\u01A1i ch\u1EAFn l\xE0n g\u1EA7n \u1EDF G2: \u0111\u1ED5i
+      sang l\xE0n xa (W), \u0111i qua, r\u1ED3i v\u1EC1 l\xE0n g\u1EA7n (S)."
+  - name: L1_Moc
+    fromTime: 2.4
+    toTime: 5
+    hint: "\u0110i th\u1EB3ng t\u1EDBi c\xE1i m\xF3c v\xE0 nh\u1EB7t ngay (E). \u1EDE
+      b\u1EADc 1 c\xE0ng m\xE1y t\u1EDBi s\u1EDBm h\u01A1n \u2014 v\xF2ng \u0111\u1ECF
+      l\xE0 ch\u1ED7 n\xF3 s\u1EBD ch\u1ED9p."
+  - name: L1_Hem
+    fromTime: 7
+    toTime: 10
+    hint: "C\u1EA7m m\xF3c, \u0111\u1EE9ng \u1EDF c\u1ED9t c\xE1p (G8) r\u1ED3i b\u1EA5m
+      E \u0111\u1EC3 tr\u01B0\u1EE3t qua h\u1EBBm."
+  marks:
+  - time: 2
+    label: "T\u1EA5m t\xF4n"
+    lane: 0
+  - time: 3
+    label: "M\xF3c"
+    lane: 0
+  - time: 8
+    label: "C\xE1p"
+    lane: -1
+  - time: 9.5
+    label: "Th\xF9ng th\u01B0"
+    lane: -1
+  ghostSpeedFactor: 0.6
+  solution: "1) T\u1EA5m t\xF4n r\u01A1i ch\u1EAFn l\xE0n g\u1EA7n \u1EDF G2: \u0111\u1ED5i
+    sang l\xE0n xa (W), \u0111i qua, v\u1EC1 l\xE0n g\u1EA7n (S).\n2) \u0110i t\u1EDBi
+    G3, b\u1EA5m E nh\u1EB7t m\xF3c tr\u01B0\u1EDBc khi c\xE0ng m\xE1y ch\u1ED9p.\n3)
+    \u0110i ti\u1EBFp t\u1EDBi c\u1ED9t c\xE1p G8, b\u1EA5m E \u0111\u1EC3 tr\u01B0\u1EE3t
+    qua h\u1EBBm.\n4) T\u1EDBi th\xF9ng th\u01B0 cu\u1ED1i. (N\u1EBFu \u0111\u1EC3
+    m\u1EA5t m\xF3c: l\xF9i t\u1EEB 2 gi\xE2y tr\u1EDF l\xEAn, NH\u1ECAP l\xEAn b\u1EADc
+    1 \u2014 c\xE0ng t\u1EDBi s\u1EDBm h\u01A1n, v\xF2ng \u0111\u1ECF b\xE1o tr\u01B0\u1EDBc.)"

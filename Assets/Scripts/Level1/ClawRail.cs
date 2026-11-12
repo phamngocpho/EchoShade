@@ -8,7 +8,7 @@ namespace EchoShade
     ///
     /// Quy tac thoi gian: vi tri cang may la HAM THUAN cua (thoi gian man, tier cua NHIP).
     ///   Tier 0: t = 4.5 -> 6.0 truot tu bai do toi cho moc, 6.0 -> 6.4 ha xuong, KEP tai 6.4, roi nang len va mang ve bai.
-    ///   Tier 1: den som hon (t ~ 3.5) va truot nhanh hon (0.8 s thay vi 1.5 s). Mat NHIP sang do ruc, to hon.
+    ///   Tier 1: den som hon (t ~ 3.5) va truot nhanh hon (0.8 s thay vi 1.5 s). Mat NHIP vang (v2), to hon; vong do bao cho cang ha.
     /// Kep: neu moc van con la "vat theo thoi gian" (chua bi Khang nhat) luc kep => moc theo cang may di mat.
     ///      Neu Khang da cam moc => cang kep vao khoang trong.
     /// Tua lai truoc luc kep => moc tu tro ve mai (vi no van la ham cua thoi gian).
@@ -17,7 +17,7 @@ namespace EchoShade
     /// toi diem moc t = 8 va di cap qua hem, cham hom thu cuoi man.
     /// Neu de mat moc roi tua >= 2 s thi NHIP len tier 1: cang toi luc ~3.5 s, van kip nhat neu nhat ngay.
     /// </summary>
-    public class ClawRail : MonoBehaviour
+    public class ClawRail : MonoBehaviour, IWarnable
     {
         [Serializable]
         public struct TierTiming
@@ -99,6 +99,10 @@ namespace EchoShade
             }
             return new Vector3(x, y, laneZ);
         }
+
+        /// <summary>v2: vong do bao truoc cho cang ha xuong (bac 1 tro len).</summary>
+        public bool WarnVisible => Tier >= 1 && clock && clock.CurrentTime < GrabTime + liftDuration;
+        public Vector3 WarnPosition => new Vector3(targetX, 0f, laneZ);
 
         public bool IsClosedAt(float t) => t >= GrabTime && t < GrabTime + liftDuration + returnDuration + 0.5f;
 

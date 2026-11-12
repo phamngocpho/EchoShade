@@ -45,7 +45,7 @@ namespace EchoShade
             float bestD = float.MaxValue;
             foreach (var item in HoldableItem.All)
             {
-                if (!item || !item.pickable || item.State == HoldableItem.ItemState.Held) continue;
+                if (!item || !item.pickable || item.IsReturning || item.State == HoldableItem.ItemState.Held) continue;
                 Vector3 d = item.transform.position - transform.position;
                 if (Mathf.Abs(d.z) > 0.8f) continue; // chi nhat vat cung lan
                 if (Mathf.Abs(d.y) > 2f) continue; // vat treo tren cao (vd: trong cang may) khong voi toi

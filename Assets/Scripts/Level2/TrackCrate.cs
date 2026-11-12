@@ -8,8 +8,8 @@ namespace EchoShade
     ///   t < luc dau tau toi thung  => nam yen tren ray, nhat duoc.
     ///   t >= luc do                 => bi tau hat vang ra ngoai ga, roi xuong duoi (mat, khong voi toi).
     /// Tua ve truoc luc tau toi => thung tro lai ray.
-    /// Neu Khang DAT thung (vat neo) xuong lan gan ma tau sau do chay qua cho do, tau tra thung ve
-    /// dong thoi gian goc (ResetToTimeline) => no bi hat vang; tua ve truoc luc tau den de lay lai o cho cu.
+    /// LUAT HOI VI (v2): neu Khang DAT thung (vat neo) xuong ray lan gan ma tau sau do chay qua cho do, tau hat thung,
+    /// thung bay ve DIEM GOC (giay 2, lan gan) kem hieu ung tua nguoc. Khong mat mau, khong tinh lan tua, khong doi bac.
     /// </summary>
     [RequireComponent(typeof(HoldableItem))]
     public class TrackCrate : TimelineObject
@@ -25,6 +25,12 @@ namespace EchoShade
         public bool IsKnockedAt(float t) => train && t >= train.ArrivalTime(restPosition.x);
 
         void Awake() { _item = GetComponent<HoldableItem>(); }
+
+        protected override void Start()
+        {
+            if (_item) _item.SetHome(restPosition);
+            base.Start();
+        }
 
         public override void Evaluate(float t)
         {
@@ -43,13 +49,13 @@ namespace EchoShade
         void Update()
         {
             // Thung da duoc dat (neo) tren ray va tau chay qua cho do => bi hat vang (quay ve dong thoi gian goc).
-            if (!_item || !clock || _item.State != HoldableItem.ItemState.Anchored || !train) return;
+            if (!_item || !clock || _item.State != HoldableItem.ItemState.Anchored || !train || _item.IsReturning || _item.AnchorTime < 0f) return;
             if (Mathf.Abs(transform.position.z - nearLaneZ) > 0.8f) return;
             float arrive = train.ArrivalTime(transform.position.x);
             if (train.IsRunningAt(clock.CurrentTime) && clock.CurrentTime >= arrive && _item.AnchorTime < arrive)
             {
-                Debug.Log("[Level2] Tau hat vang thung dang nam tren ray.");
-                _item.ResetToTimeline();
+                Debug.Log("[Level2] Tau hat thung dang nam tren ray => hoi vi.");
+                _item.ReturnHome("tàu hất thùng");
             }
         }
     }

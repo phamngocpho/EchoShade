@@ -4,7 +4,10 @@ using UnityEngine.UI;
 
 namespace EchoShade
 {
-    /// <summary>HUD: tim (HP), cap do NHIP, dong muc tieu, phu de loi thoai NHIP, bang hoan thanh man.</summary>
+    /// <summary>
+    /// HUD (v2 vai tro D): tim (mau), bac NHIP (mau mat: xanh/vang/cam/do), dong muc tieu,
+    /// phu de thoai NHIP, dong goi y, bang hoan thanh man. Chi nghe su kien, khong goi nguoc vao gameplay.
+    /// </summary>
     public class HUD : MonoBehaviour
     {
         public static HUD Instance { get; private set; }
@@ -14,19 +17,22 @@ namespace EchoShade
         public TMP_Text objectiveText;
         public TMP_Text subtitleText;
         public TMP_Text bannerText;
+        [Tooltip("Dong goi y (tuy chon). Khong co thi dung phu de.")]
+        public TMP_Text hintText;
 
         [TextArea] public string objective = "Mang móc qua hẻm trước khi càng máy lấy mất.";
         [TextArea] public string startLine = "Ca giao đã trễ. Lịch không có chỗ cho thư đến muộn. Hãy quay lại vạch bắt đầu.";
         public float startLineDuration = 7f;
-        [TextArea] public string tierUpLine = "Đã ghi nhận. Lần này càng máy sẽ đến sớm hơn.";
-        [Tooltip("Loi thoai rieng cho tung tier moi (index = tier). De trong = dung tierUpLine.")]
+        [TextArea] public string tierUpLine = "Đã ghi nhận. Tôi nhớ thêm một bước của anh.";
+        [Tooltip("Loi thoai rieng cho tung bac moi (index = bac). De trong = dung tierUpLine.")]
         public string[] tierUpLines;
 
         public Color heartOn = new Color(1f, 0.25f, 0.3f);
         public Color heartOff = new Color(1f, 1f, 1f, 0.15f);
-        public Color[] tierColors = { new Color(0.4f, 0.85f, 1f), new Color(1f, 0.3f, 0.2f), new Color(1f, 0f, 0.6f) };
+        [Tooltip("Khong dung nua (v2 dung NhipBrain.TierColors). Giu de tuong thich scene cu.")]
+        public Color[] tierColors;
 
-        float _subUntil;
+        float _subUntil, _hintUntil;
         float _tierFlashUntil;
         NhipBrain _brain;
         int _lastTier = int.MinValue, _lastCap = int.MinValue;
@@ -36,11 +42,18 @@ namespace EchoShade
 
         void Start()
         {
-            if (objectiveText) objectiveText.text = "Mục tiêu: " + objective;
+            SetObjective(objective);
             if (bannerText) bannerText.gameObject.SetActive(false);
+            if (hintText) hintText.gameObject.SetActive(false);
             ShowSubtitle(startLine, startLineDuration, true);
             _brain = NhipBrain.Instance;
             if (_brain) _brain.OnTierChanged += OnTier;
+        }
+
+        public void SetObjective(string text)
+        {
+            objective = text;
+            if (objectiveText) objectiveText.text = "Mục tiêu: " + text;
         }
 
         void OnTier(int oldTier, int newTier)
@@ -56,10 +69,18 @@ namespace EchoShade
 
         public void ShowSubtitle(string line, float seconds, bool fromNhip)
         {
-            if (!subtitleText) return;
+            if (!subtitleText || string.IsNullOrEmpty(line)) return;
             subtitleText.text = fromNhip ? "NHỊP: “" + line + "”" : line;
             subtitleText.gameObject.SetActive(true);
             _subUntil = Time.unscaledTime + seconds;
+        }
+
+        public void ShowHint(string line, float seconds)
+        {
+            if (!hintText) { ShowSubtitle("Gợi ý: " + line, seconds, false); return; }
+            hintText.text = "Gợi ý: " + line;
+            hintText.gameObject.SetActive(true);
+            _hintUntil = Time.unscaledTime + seconds;
         }
 
         public void ShowBanner(string text)
@@ -70,6 +91,7 @@ namespace EchoShade
         }
 
         public string CurrentSubtitle => subtitleText && subtitleText.gameObject.activeSelf ? subtitleText.text : "";
+        public string CurrentHint => hintText && hintText.gameObject.activeSelf ? hintText.text : "";
 
         void Update()
         {
@@ -84,16 +106,18 @@ namespace EchoShade
                 if (t != _lastTier || _brain.tierCap != _lastCap)
                 {
                     _lastTier = t; _lastCap = _brain.tierCap;
-                    tierText.text = $"NHỊP cấp độ: {t} / {_brain.tierCap}";
+                    tierText.text = $"NHỊP · bậc {t}/{_brain.tierCap} ({NhipBrain.TierColorName(t)})";
                 }
-                Color c = tierColors[Mathf.Clamp(t, 0, tierColors.Length - 1)];
+                Color c = NhipBrain.TierColor(t);
                 if (Time.unscaledTime < _tierFlashUntil && Mathf.Repeat(Time.unscaledTime * 6f, 1f) > 0.5f) c = Color.white;
                 tierText.color = c;
-                tierText.fontSize = Time.unscaledTime < _tierFlashUntil ? 40 : 32;
+                tierText.fontSize = Time.unscaledTime < _tierFlashUntil ? 38 : 30;
             }
 
             if (subtitleText && subtitleText.gameObject.activeSelf && Time.unscaledTime > _subUntil)
                 subtitleText.gameObject.SetActive(false);
+            if (hintText && hintText.gameObject.activeSelf && Time.unscaledTime > _hintUntil)
+                hintText.gameObject.SetActive(false);
         }
     }
 }

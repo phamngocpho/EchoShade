@@ -1,0 +1,64 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97379b54901caa24ca5b012769fb10c9, type: 3}
+  m_Name: LevelData_L2
+  m_EditorClassIdentifier: Assembly-CSharp::EchoShade.LevelData
+  levelIndex: 2
+  displayName: "M\xE0n 2"
+  placeName: "Ga \u0110\xEAm"
+  rulerSeconds: 10
+  entryTier: 0
+  tierCap: 2
+  objective: "C\u1EA7m th\xF9ng qua \u0111\u01B0\u1EDDng t\xE0u v\xE0 \u0111\u1EB7t
+    l\xEAn c\u1EA7n c\u1EEDa."
+  startLine: "T\xE0u v\u1EABn \u0111\xFAng gi\u1EDD. Ch\u1EC9 c\xF3 anh l\xE0 \u0111i
+    l\u1EC7ch l\u1ECBch."
+  tierUpLines:
+  - 
+  - "L\u1ECBch t\xE0u \u0111\xE3 \u0111\u01B0\u1EE3c \u0111i\u1EC1u ch\u1EC9nh. T\xE0u
+    s\u1EBD ch\u1EA1y s\u1EDBm h\u01A1n."
+  - "T\xF4i nh\u1EDB anh \u0111\xE3 \u0111i l\u1ED1i n\xE0o. T\xF4i s\u1EBD \u0111\u1EE3i
+    \u1EDF \u0111\xF3."
+  ghostLine: 
+  zones:
+  - name: L2_TrainZone
+    fromTime: 3
+    toTime: 7.5
+    hint: "T\xE0u ch\u1EA1y \u1EDF l\xE0n g\u1EA7n. C\u1EA7m th\xF9ng r\u1ED3i chuy\u1EC3n
+      sang l\xE0n xa (W) \u0111\u1EC3 tr\xE1nh t\xE0u."
+  - name: L2_Bien
+    fromTime: 7.5
+    toTime: 10
+    hint: "Bi\u1EC3n hi\u1EC7u r\u01A1i \u1EDF l\xE0n nh\u1EDB \u0111\u01B0\u1EE3c
+      (v\xF2ng \u0111\u1ECF). \u0110\u1ED5i l\xE0n \u0111\u1EC3 tr\xE1nh, ho\u1EB7c
+      b\u1EA5m Space \u0111\u1EC3 nh\u1EA3y qua bi\u1EC3n \u0111\xE3 r\u01A1i."
+  marks:
+  - time: 2
+    label: "Th\xF9ng"
+    lane: 0
+  - time: 4
+    label: "T\xE0u"
+    lane: 0
+  - time: 8
+    label: "Bi\u1EC3n hi\u1EC7u"
+    lane: -1
+  - time: 9
+    label: "C\u1EA7n c\u1EEDa"
+    lane: 1
+  ghostSpeedFactor: 0.6
+  solution: "1) Nh\u1EB7t th\xF9ng \u1EDF G2 (l\xE0n g\u1EA7n, tr\xEAn ray).\n2)
+    \u0110\u1ED5i sang l\xE0n xa \u0111\u1EC3 tr\xE1nh t\xE0u (G3\u2013G7).\n3) \u0110\u1EB7t
+    th\xF9ng l\xEAn c\u1EA7n c\u1EEDa \u1EDF l\xE0n xa (G9) \u2014 c\u1EEDa m\u1EDF.\n4)
+    \u0110i qua c\u1EEDa t\u1EDBi th\xF9ng th\u01B0. N\u1EBFu bi\u1EC3n hi\u1EC7u
+    \u0111\xE3 r\u01A1i ch\u1EAFn \u0111\u01B0\u1EDDng: Space \u0111\u1EC3 nh\u1EA3y
+    qua. Th\xF9ng b\u1ECB t\xE0u h\u1EA5t s\u1EBD t\u1EF1 H\u1ED3i v\u1ECB v\u1EC1
+    ch\u1ED7 c\u0169."
