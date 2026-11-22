@@ -152,7 +152,7 @@ namespace EchoShade
             decisions.Add(lane);
             brain.memory.Add(new NhipMemoryEntry { zone = "L5_Cua", lane = (int)lane, stopX = khang.transform.position.x, stopTime = clock.CurrentTime, rewindIndex = clock.RewindCount });
             LastEvent = "decide" + lane;
-            Debug.Log($"[NHIP/L5] Cam ket lan {lane}. So quyet dinh = {decisions.Count}");
+            GameLog.Info($"[NHIP/L5] Cam ket lan {lane}. So quyet dinh = {decisions.Count}");
             Say(line, 4f);
         }
 
@@ -165,7 +165,7 @@ namespace EchoShade
             var lost = decisions[decisions.Count - 1];
             decisions.RemoveAt(decisions.Count - 1);
             LastEvent = "forgot" + lost;
-            Debug.Log($"[NHIP/L5] Quen quyet dinh {lost}");
+            GameLog.Info($"[NHIP/L5] Quen quyet dinh {lost}");
             Say("...Dữ liệu bị mất. Tôi quên mất điều vừa quyết.", 4f);
         }
 

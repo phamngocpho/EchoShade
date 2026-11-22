@@ -54,7 +54,7 @@ namespace EchoShade
             float arrive = train.ArrivalTime(transform.position.x);
             if (train.IsRunningAt(clock.CurrentTime) && clock.CurrentTime >= arrive && _item.AnchorTime < arrive)
             {
-                Debug.Log("[Level2] Tau hat thung dang nam tren ray => hoi vi.");
+                GameLog.Info("[Level2] Tau hat thung dang nam tren ray => hoi vi.");
                 _item.ReturnHome("tàu hất thùng");
             }
         }

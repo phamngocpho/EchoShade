@@ -37,6 +37,17 @@ namespace EchoShade
 
         public void Clear() { _samples.Clear(); _rt = 0f; _acc = 0f; }
 
+        // ---- v3.1: luu toi da N ban ghi (ban moi thay ban cu nhat). Man 5: N = 2, moi ban do mot GhostPlayer phat. ----
+        readonly List<List<TrailSample>> _recordings = new List<List<TrailSample>>();
+        public IReadOnlyList<List<TrailSample>> Recordings => _recordings;
+        public void StoreRecording(List<TrailSample> seg, int max)
+        {
+            if (seg == null || seg.Count < 2) return;
+            _recordings.Add(seg);
+            while (_recordings.Count > Mathf.Max(1, max)) _recordings.RemoveAt(0);
+        }
+        public void ClearRecordings() => _recordings.Clear();
+
         void Update()
         {
             var clock = LevelClock.Instance;

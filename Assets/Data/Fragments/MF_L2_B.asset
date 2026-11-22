@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba5fa67ced8285e49b14b6b22106fde4, type: 3}
+  m_Name: MF_L2_B
+  m_EditorClassIdentifier: Assembly-CSharp::EchoShade.MemoryFragmentData
+  id: L2_B
+  levelIndex: 2
+  displayName: "B\u1EA3ng gi\u1EDD t\xE0u b\u1ECB g\u1EA1ch"
+  note: "M\u1ED9t d\xF2ng b\u1ECB g\u1EA1ch b\u1EB1ng m\u1EF1c \u0111\u1ECF. B\xEAn
+    l\u1EC1 l\xE0 ch\u1EEF k\xFD c\u1EE7a anh."
+  nhipLine: 

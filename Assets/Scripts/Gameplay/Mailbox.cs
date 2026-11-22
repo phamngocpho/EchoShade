@@ -65,14 +65,14 @@ namespace EchoShade
             Active = this;
             if (old) old.RefreshRim();
             RefreshRim();
-            Debug.Log($"[Mailbox] Checkpoint: {name}");
+            GameLog.Info($"[Mailbox] Checkpoint: {name}");
         }
 
         void Complete()
         {
             if (!isFinal) return;
             LevelCompleted = true;
-            Debug.Log("[Level] Level complete!");
+            GameLog.Info("[Level] Level complete!");
             if (HUD.Instance)
             {
                 if (!string.IsNullOrEmpty(arrivalLine)) HUD.Instance.ShowSubtitle(arrivalLine, 8f, true);
@@ -89,6 +89,7 @@ namespace EchoShade
             if (LevelCompleted) return;
             LevelCompleted = true;
             if (HUD.Instance && !string.IsNullOrEmpty(banner)) HUD.Instance.ShowBanner(banner);
+            OnLevelComplete?.Invoke(null);
             GameFlow.Ensure().CompleteLevel(sceneName);
         }
 

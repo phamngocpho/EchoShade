@@ -15,11 +15,11 @@ MonoBehaviour:
   levelIndex: 1
   displayName: "M\xE0n 1"
   placeName: "S\xE2n th\u01B0\u1EE3ng ph\u1ED1 C\u0169"
-  rulerSeconds: 10
+  rulerSeconds: 14
   entryTier: 0
   tierCap: 1
-  objective: "Mang m\xF3c qua h\u1EBBm tr\u01B0\u1EDBc khi c\xE0ng m\xE1y l\u1EA5y
-    m\u1EA5t."
+  objective: "Mang m\xF3c qua h\u1EBBm, r\u1ED3i \u0111i ch\u1EADm qua d\xE3y \u1ED1ng
+    x\u1EA3 h\u01A1i t\u1EDBi th\xF9ng th\u01B0 cu\u1ED1i (G13,6)."
   startLine: "Ca giao \u0111\xE3 tr\u1EC5. L\u1ECBch kh\xF4ng c\xF3 ch\u1ED7 cho
     th\u01B0 \u0111\u1EBFn mu\u1ED9n. H\xE3y quay l\u1EA1i v\u1EA1ch b\u1EAFt \u0111\u1EA7u."
   tierUpLines:
@@ -44,6 +44,12 @@ MonoBehaviour:
     toTime: 10
     hint: "C\u1EA7m m\xF3c, \u0111\u1EE9ng \u1EDF c\u1ED9t c\xE1p (G8) r\u1ED3i b\u1EA5m
       E \u0111\u1EC3 tr\u01B0\u1EE3t qua h\u1EBBm."
+  - name: L1_Hoi
+    fromTime: 10
+    toTime: 14
+    hint: "\u1ED0ng x\u1EA3 phun h\u01A1i \u0111\xFAng l\xFAc anh t\u1EDBi. \u0110i
+      ch\u1EADm, nh\xECn h\u01A1i b\u1ED1c l\xEAn \u1EDF l\xE0n n\xE0o r\u1ED3i \u0111\u1ED5i
+      sang l\xE0n kia (g\u1EA7n G11 \u2192 xa G12,2 \u2192 g\u1EA7n G13)."
   marks:
   - time: 2
     label: "T\u1EA5m t\xF4n"
@@ -55,13 +61,38 @@ MonoBehaviour:
     label: "C\xE1p"
     lane: -1
   - time: 9.5
+    label: "Th\xF9ng th\u01B0 gi\u1EEFa"
+    lane: -1
+  - time: 11
+    label: "H\u01A1i"
+    lane: 0
+  - time: 12.2
+    label: "H\u01A1i"
+    lane: 1
+  - time: 13
+    label: "H\u01A1i"
+    lane: 0
+  - time: 13.6
     label: "Th\xF9ng th\u01B0"
     lane: -1
   ghostSpeedFactor: 0.6
+  maxGhostRecordings: 1
+  twoGhostLine: 
+  fragmentsCompleteLine: "Anh t\u1EEBng \u0111\u1EE9ng \u1EDF \u0111\xE2y. T\xF4i
+    c\xF2n nh\u1EDB c\u1EA3 l\u1EA7n \u0111\xF3."
+  fragments:
+  - {fileID: 11400000, guid: d0d469a68512fee42a0570d1d28b10ba, type: 2}
+  - {fileID: 11400000, guid: 8ec1e7cb902db5a4a99b99da1b7f17ea, type: 2}
   solution: "1) T\u1EA5m t\xF4n r\u01A1i ch\u1EAFn l\xE0n g\u1EA7n \u1EDF G2: \u0111\u1ED5i
     sang l\xE0n xa (W), \u0111i qua, v\u1EC1 l\xE0n g\u1EA7n (S).\n2) \u0110i t\u1EDBi
     G3, b\u1EA5m E nh\u1EB7t m\xF3c tr\u01B0\u1EDBc khi c\xE0ng m\xE1y ch\u1ED9p.\n3)
     \u0110i ti\u1EBFp t\u1EDBi c\u1ED9t c\xE1p G8, b\u1EA5m E \u0111\u1EC3 tr\u01B0\u1EE3t
     qua h\u1EBBm.\n4) T\u1EDBi th\xF9ng th\u01B0 cu\u1ED1i. (N\u1EBFu \u0111\u1EC3
     m\u1EA5t m\xF3c: l\xF9i t\u1EEB 2 gi\xE2y tr\u1EDF l\xEAn, NH\u1ECAP l\xEAn b\u1EADc
-    1 \u2014 c\xE0ng t\u1EDBi s\u1EDBm h\u01A1n, v\xF2ng \u0111\u1ECF b\xE1o tr\u01B0\u1EDBc.)"
+    1 \u2014 c\xE0ng t\u1EDBi s\u1EDBm h\u01A1n, v\xF2ng \u0111\u1ECF b\xE1o tr\u01B0\u1EDBc.)\n5)
+    (v3.1) Sau th\xF9ng th\u01B0 gi\u1EEFa: d\xE3y \u1ED1ng x\u1EA3 h\u01A1i. \u1ED0ng
+    \u1EDF G11 (l\xE0n g\u1EA7n) \u2192 \u0111i l\xE0n xa; \u1ED1ng \u1EDF G12,2
+    (l\xE0n xa) \u2192 v\u1EC1 l\xE0n g\u1EA7n; \u1ED1ng \u1EDF G13 (l\xE0n g\u1EA7n)
+    \u2192 sang l\xE0n xa; t\u1EDBi th\xF9ng th\u01B0 cu\u1ED1i G13,6.\nM\u1EA3nh
+    nh\u1EDB: t\u1EDD ghi ch\xFA c\u0169 (G1,2 l\xE0n xa), m\xE1y thu t\xEDch t\u1EAFc
+    (G12 l\xE0n g\u1EA7n)."

@@ -15,12 +15,13 @@ MonoBehaviour:
   levelIndex: 4
   displayName: "M\xE0n 4"
   placeName: "X\u01B0\u1EDFng L\u1ECBch"
-  rulerSeconds: 16
+  rulerSeconds: 22
   entryTier: 1
   tierCap: 3
-  objective: "C\u1EEDa x\u01B0\u1EDFng (G12) ch\u1EC9 m\u1EDF khi c\xF3 ng\u01B0\u1EDDi
-    \u0111\u1EE9ng tr\xEAn b\xE0n \u0111\u1EA1p c\u1EA3m bi\u1EBFn (G7,5\u20138,8).
-    H\xE3y \u0111\u1EC3 \u1EA2nh v\u1ECDng \u0111\u1EE9ng thay anh."
+  objective: "C\u1EEDa x\u01B0\u1EDFng (G12) v\xE0 c\u1EEDa kho (G20,5) ch\u1EC9
+    m\u1EDF khi c\xF3 ng\u01B0\u1EDDi \u0111\u1EE9ng tr\xEAn b\xE0n \u0111\u1EA1p
+    c\u1EA3m bi\u1EBFn. H\xE3y \u0111\u1EC3 \u1EA2nh v\u1ECDng \u0111\u1EE9ng thay
+    anh \u2014 m\u1ED7i c\u1EEDa m\u1ED9t b\u1EA3n ghi."
   startLine: "X\u01B0\u1EDFng n\xE0y l\xE0m ra l\u1ECBch cho c\u1EA3 th\xE0nh ph\u1ED1.
     C\u1EEDa ch\u1EC9 m\u1EDF cho ng\u01B0\u1EDDi \u0111\u1EE9ng \u0111\xFAng ch\u1ED7."
   tierUpLines:
@@ -31,8 +32,9 @@ MonoBehaviour:
   - "L\xF9i \u0111\u1EE7 xa hai l\u1EA7n \u0111\u1EC3 NH\u1ECAP g\u1ECDi \u1EA2nh
     v\u1ECDng. T\xF4i thu\u1ED9c \u0111\u01B0\u1EDDng anh r\u1ED3i \u2014 b\xF3ng
     c\u1EE7a anh s\u1EBD \u0111i tr\u01B0\u1EDBc."
-  ghostLine: "B\xF3ng n\xE0y kh\xF4ng \u0111\xF2i g\xEC. N\xF3 ch\u1EC9 \u0111\u1EE9ng
-    \u1EDF ch\u1ED7 anh t\u1EEBng \u0111\u1EE9ng."
+  ghostLine: "T\xF4i \u0111\xE3 ghi \u0111\u01B0\u1EDDng anh \u0111i. B\xF3ng n\xE0y
+    kh\xF4ng \u0111\xF2i g\xEC. N\xF3 ch\u1EC9 \u0111\u1EE9ng \u1EDF ch\u1ED7 anh
+    t\u1EEBng \u0111\u1EE9ng."
   zones:
   - name: L4_Vao
     fromTime: 0
@@ -52,7 +54,16 @@ MonoBehaviour:
     fromTime: 9
     toTime: 16
     hint: "L\xE0n xa G9\u2013G13 l\xE0 h\u1ED1 b\xE1nh r\u0103ng. Ch\u1EC9 qua \u0111\u01B0\u1EE3c
-      b\u1EB1ng l\xE0n g\u1EA7n khi c\u1EEDa m\u1EDF."
+      b\u1EB1ng l\xE0n g\u1EA7n khi c\u1EEDa m\u1EDF. Th\xF9ng th\u01B0 gi\u1EEFa
+      \u1EDF G16."
+  - name: L4_Kho
+    fromTime: 16
+    toTime: 22
+    hint: "C\u1EEDa kho (G20,5) c\u1EA7n ng\u01B0\u1EDDi tr\xEAn b\xE0n \u0111\u1EA1p
+      G17\u201318,2. \u0110\u1EE9ng l\xEAn b\xE0n \u0111\u1EA1p, l\xF9i m\u1ED9t
+      m\u1EA1ch v\u1EC1 G16: b\u1EA3n ghi m\u1EDBi thay b\u1EA3n c\u0169, b\xF3ng
+      m\u1EDBi \u0111\u1EE9ng thay anh. V\u01B0\u1EE3t b\xF3ng b\u1EB1ng l\xE0n xa,
+      v\u1EC1 l\xE0n g\u1EA7n tr\u01B0\u1EDBc G19."
   marks:
   - time: 2
     label: "Th\xF9ng"
@@ -70,9 +81,28 @@ MonoBehaviour:
     label: "C\u1EEDa x\u01B0\u1EDFng"
     lane: 0
   - time: 16
+    label: "Th\xF9ng th\u01B0 gi\u1EEFa"
+    lane: -1
+  - time: 17
+    label: "B\xE0n \u0111\u1EA1p 2"
+    lane: 0
+  - time: 19
+    label: "H\u1ED1 b\xE1nh r\u0103ng 2"
+    lane: 1
+  - time: 20.5
+    label: "C\u1EEDa kho"
+    lane: 0
+  - time: 21.6
     label: "Th\xF9ng th\u01B0"
     lane: -1
   ghostSpeedFactor: 0.6
+  maxGhostRecordings: 1
+  twoGhostLine: 
+  fragmentsCompleteLine: "\u0110\u1ED3ng h\u1ED3 n\xE0y d\u1EEBng \u0111\xFAng ph\xFAt
+    t\xF4i s\u1EEDa l\u1ECBch. T\xF4i kh\xF4ng s\u1EEDa \u0111\u01B0\u1EE3c n\xF3."
+  fragments:
+  - {fileID: 11400000, guid: bf362e59e076f1d4fb1b10bad869da2d, type: 2}
+  - {fileID: 11400000, guid: 3ef6ac38bce262745a8d165983d6d4a2, type: 2}
   solution: "1) \u0110i l\xE0n g\u1EA7n t\u1EDBi b\xE0n \u0111\u1EA1p G8 (c\u1EEDa
     m\u1EDF khi anh \u0111\u1EE9ng \u0111\xF3, \u0111\xF3ng khi anh r\u1EDDi \u0111i).\n2)
     L\xF9i m\u1ED9t m\u1EA1ch v\u1EC1 kho\u1EA3ng G2 (l\u1EA7n l\xF9i 1 > b\u1EADc
@@ -87,4 +117,14 @@ MonoBehaviour:
     b\xF3ng b\u1EB1ng l\xE0n xa \u1EDF G8,5, v\u1EC1 l\xE0n g\u1EA7n tr\u01B0\u1EDBc
     G9, qua c\u1EEDa G12 t\u1EDBi th\xF9ng th\u01B0 G16.\nBi\u1EBFn th\u1EC3: \u0111\u1EB7t
     th\xF9ng (v\u1EADt neo) ngay sau b\xE0n \u0111\u1EA1p \u2014 b\xF3ng va v\xE0o
-    th\xF9ng v\xE0 \u0111\u1EE9ng l\u1EA1i tr\xEAn b\xE0n \u0111\u1EA1p."
+    th\xF9ng v\xE0 \u0111\u1EE9ng l\u1EA1i tr\xEAn b\xE0n \u0111\u1EA1p.\n6) (v3.1)
+    Kho l\u1ECBch G16\u2013G22: \u0111i l\xE0n g\u1EA7n l\xEAn b\xE0n \u0111\u1EA1p
+    c\u1EA3m bi\u1EBFn G17\u201318,2 (\u0111\u1EE9ng \u1EDF kho\u1EA3ng G18). L\xF9i
+    m\u1ED9t m\u1EA1ch v\u1EC1 G16 (\u2265 2 gi\xE2y): b\u1EA3n ghi m\u1EDBi thay
+    b\u1EA3n ghi c\u0169 \u2014 b\xF3ng c\u0169 bi\u1EBFn m\u1EA5t, b\xF3ng m\u1EDBi
+    \u0111i l\u1EA1i \u0111\u01B0\u1EDDng \u0111\xF3 v\xE0 \u0111\u1EE9ng tr\xEAn
+    b\xE0n \u0111\u1EA1p. Ch\u1EDD b\xF3ng t\u1EDBi b\xE0n \u0111\u1EA1p, \u0111i
+    l\xE0n xa v\u01B0\u1EE3t b\xF3ng, v\u1EC1 l\xE0n g\u1EA7n tr\u01B0\u1EDBc G19
+    (h\u1ED1 b\xE1nh r\u0103ng l\xE0n xa G19\u201321,6), qua c\u1EEDa kho G20,5 t\u1EDBi
+    th\xF9ng th\u01B0 G21,6.\nM\u1EA3nh nh\u1EDB: b\u1EA3n ghi l\u1ECBch x\u01B0\u1EDFng
+    (G4 l\xE0n xa), \u0111\u1ED3ng h\u1ED3 d\u1EEBng (G18,7 l\xE0n xa)."

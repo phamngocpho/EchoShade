@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba5fa67ced8285e49b14b6b22106fde4, type: 3}
+  m_Name: MF_L4_A
+  m_EditorClassIdentifier: Assembly-CSharp::EchoShade.MemoryFragmentData
+  id: L4_A
+  levelIndex: 4
+  displayName: "B\u1EA3n ghi l\u1ECBch x\u01B0\u1EDFng"
+  note: "L\u1ECBch in s\u1EB5n cho m\u1ECDi ca. Ri\xEAng ca \u0111\xEAm n\xE0y c\xF3
+    m\u1ED9t \xF4 b\u1ECB b\u1ECF tr\u1ED1ng."
+  nhipLine: 

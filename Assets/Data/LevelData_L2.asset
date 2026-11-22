@@ -15,11 +15,12 @@ MonoBehaviour:
   levelIndex: 2
   displayName: "M\xE0n 2"
   placeName: "Ga \u0110\xEAm"
-  rulerSeconds: 10
+  rulerSeconds: 16
   entryTier: 0
   tierCap: 2
-  objective: "C\u1EA7m th\xF9ng qua \u0111\u01B0\u1EDDng t\xE0u v\xE0 \u0111\u1EB7t
-    l\xEAn c\u1EA7n c\u1EEDa."
+  objective: "C\u1EA7m th\xF9ng qua \u0111\u01B0\u1EDDng t\xE0u, \u0111\u1EB7t l\xEAn
+    c\u1EA7n c\u1EEDa; r\u1ED3i mang th\xF9ng th\u1EE9 hai l\xEAn b\xE0n \u0111\u1EA1p
+    t\u1EA3i \u0111\u1EC3 m\u1EDF c\u1ED5ng ga ph\u1EE5 (G14,6)."
   startLine: "T\xE0u v\u1EABn \u0111\xFAng gi\u1EDD. Ch\u1EC9 c\xF3 anh l\xE0 \u0111i
     l\u1EC7ch l\u1ECBch."
   tierUpLines:
@@ -30,6 +31,13 @@ MonoBehaviour:
     \u1EDF \u0111\xF3."
   ghostLine: 
   zones:
+  - name: L2_HanhLang
+    fromTime: 0.5
+    toTime: 3
+    hint: "H\xE0nh lang ph\u1EE5 (l\xE0n xa G0,5\u2013G3) l\xE0 l\u1ED1i c\u1EE5t:
+      v\xE0o l\u1EA5y M\u1EA3nh nh\u1EDB th\xEC ph\u1EA3i l\xF9i v\u1EC1 G0,5 m\u1EDBi
+      ra \u0111\u01B0\u1EE3c. L\xF9i \u0111\u1EE7 2 gi\xE2y l\xE0 m\u1ED9t l\u1EA7n
+      tua \u2014 t\xE0u s\u1EBD ch\u1EA1y s\u1EDBm h\u01A1n."
   - name: L2_TrainZone
     fromTime: 3
     toTime: 7.5
@@ -41,7 +49,16 @@ MonoBehaviour:
     hint: "Bi\u1EC3n hi\u1EC7u r\u01A1i \u1EDF l\xE0n nh\u1EDB \u0111\u01B0\u1EE3c
       (v\xF2ng \u0111\u1ECF). \u0110\u1ED5i l\xE0n \u0111\u1EC3 tr\xE1nh, ho\u1EB7c
       b\u1EA5m Space \u0111\u1EC3 nh\u1EA3y qua bi\u1EC3n \u0111\xE3 r\u01A1i."
+  - name: L2_Phu
+    fromTime: 10
+    toTime: 16
+    hint: "Mang th\xF9ng \u1EDF G11 (l\xE0n g\u1EA7n) sang l\xE0n xa, \u0111\u1EB7t
+      l\xEAn b\xE0n \u0111\u1EA1p t\u1EA3i G13,2 \u0111\u1EC3 m\u1EDF c\u1ED5ng G14,6.
+      Bi\u1EC3n r\u01A1i \u1EDF G12,3 v\xE0o l\xE0n NH\u1ECAP nh\u1EDB (v\xF2ng \u0111\u1ECF)."
   marks:
+  - time: 1.6
+    label: "H\xE0nh lang ph\u1EE5"
+    lane: 1
   - time: 2
     label: "Th\xF9ng"
     lane: 0
@@ -54,11 +71,44 @@ MonoBehaviour:
   - time: 9
     label: "C\u1EA7n c\u1EEDa"
     lane: 1
+  - time: 9.7
+    label: "Th\xF9ng th\u01B0 gi\u1EEFa"
+    lane: -1
+  - time: 11
+    label: "Th\xF9ng 2"
+    lane: 0
+  - time: 12.3
+    label: "Bi\u1EC3n r\u01A1i"
+    lane: -1
+  - time: 13.2
+    label: "B\xE0n \u0111\u1EA1p t\u1EA3i"
+    lane: 1
+  - time: 14.6
+    label: "C\u1ED5ng"
+    lane: -1
+  - time: 15.6
+    label: "Th\xF9ng th\u01B0"
+    lane: -1
   ghostSpeedFactor: 0.6
+  maxGhostRecordings: 1
+  twoGhostLine: 
+  fragmentsCompleteLine: "Chuy\u1EBFn t\xE0u \u0111\xF3 kh\xF4ng c\xF3 trong l\u1ECBch.
+    V\u1EADy m\xE0 anh v\u1EABn gi\u1EEF v\xE9."
+  fragments:
+  - {fileID: 11400000, guid: 3db77d71ef0208649a2727eb6e676307, type: 2}
+  - {fileID: 11400000, guid: da18226d4ab83064881828670d22815e, type: 2}
   solution: "1) Nh\u1EB7t th\xF9ng \u1EDF G2 (l\xE0n g\u1EA7n, tr\xEAn ray).\n2)
     \u0110\u1ED5i sang l\xE0n xa \u0111\u1EC3 tr\xE1nh t\xE0u (G3\u2013G7).\n3) \u0110\u1EB7t
     th\xF9ng l\xEAn c\u1EA7n c\u1EEDa \u1EDF l\xE0n xa (G9) \u2014 c\u1EEDa m\u1EDF.\n4)
     \u0110i qua c\u1EEDa t\u1EDBi th\xF9ng th\u01B0. N\u1EBFu bi\u1EC3n hi\u1EC7u
     \u0111\xE3 r\u01A1i ch\u1EAFn \u0111\u01B0\u1EDDng: Space \u0111\u1EC3 nh\u1EA3y
     qua. Th\xF9ng b\u1ECB t\xE0u h\u1EA5t s\u1EBD t\u1EF1 H\u1ED3i v\u1ECB v\u1EC1
-    ch\u1ED7 c\u0169."
+    ch\u1ED7 c\u0169.\n5) (v3.1) S\xE2n ga ph\u1EE5: nh\u1EB7t th\xF9ng 2 \u1EDF
+    G11 (l\xE0n g\u1EA7n), qua G12,3 \u1EDF l\xE0n kh\xF4ng c\xF3 v\xF2ng \u0111\u1ECF,
+    \u0111\u1ED5i sang l\xE0n xa v\xE0 \u0111\u1EB7t th\xF9ng l\xEAn b\xE0n \u0111\u1EA1p
+    t\u1EA3i G13,2 \u2014 c\u1ED5ng G14,6 m\u1EDF. T\u1EDBi th\xF9ng th\u01B0 cu\u1ED1i
+    G15,6.\nT\xF9y ch\u1ECDn: ngay t\u1EEB \u0111\u1EA7u, \u0111\u1ED5i sang l\xE0n
+    xa tr\u01B0\u1EDBc G0,5 \u0111\u1EC3 v\xE0o h\xE0nh lang ph\u1EE5 (2 M\u1EA3nh
+    nh\u1EDB: v\xE9 t\xE0u c\u0169 G1,6, b\u1EA3ng gi\u1EDD t\xE0u b\u1ECB g\u1EA1ch
+    G2,85). H\xE0nh lang c\u1EE5t n\xEAn ph\u1EA3i l\xF9i v\u1EC1 G0,5 (l\u1EA7n
+    tua \u2192 NH\u1ECAP b\u1EADc 1, t\xE0u ch\u1EA1y s\u1EDBm h\u01A1n)."

@@ -15,14 +15,14 @@ MonoBehaviour:
   levelIndex: 3
   displayName: "M\xE0n 3"
   placeName: "B\u1EBFn c\u1EA7u n\xE2ng"
-  rulerSeconds: 16
+  rulerSeconds: 20
   entryTier: 0
   tierCap: 2
   objective: "\u0110\u1EB7t th\xF9ng l\xEAn b\xE0n \u0111\u1EA1p t\u1EA3i (G6, l\xE0n
-    xa) \u0111\u1EC3 h\u1EA1 c\u1EA7u, qua k\xEAnh, giao th\u01B0 \u1EDF G16."
-  startLine: "B\u1EBFn n\xE0y ch\u1EA1y theo l\u1ECBch c\u1EA9u. C\u1EA7u ch\u1EC9
-    h\u1EA1 khi c\xF3 h\xE0ng n\u1EB7ng \u2014 v\xE0 t\xF4i \u0111ang \u0111\u1EBFm
-    t\u1EEBng b\u01B0\u1EDBc c\u1EE7a anh."
+    xa) \u0111\u1EC3 h\u1EA1 c\u1EA7u, qua k\xEAnh, v\u01B0\u1EE3t b\xE3i container
+    v\xE0 giao th\u01B0 \u1EDF G19,6."
+  startLine: "C\u1EA7u n\xE2ng \u0111\xFAng gi\u1EDD. Anh th\xEC c\u1EE9 \u0111i
+    t\xECm ch\u1ED7 \u0111\u1EC3 th\xF9ng."
   tierUpLines:
   - 
   - "\u0110\xE3 ghi nh\u1EADn. T\xF4i nh\u1EDB anh \u0111i l\xE0n n\xE0o qua c\u1EA7u."
@@ -44,7 +44,13 @@ MonoBehaviour:
   - name: L3_Cuoi
     fromTime: 14
     toTime: 16
-    hint: "Th\xF9ng th\u01B0 cu\u1ED1i \u1EDF G16."
+    hint: "Th\xF9ng th\u01B0 gi\u1EEFa \u1EDF G16. Ph\xEDa sau l\xE0 b\xE3i container."
+  - name: L3_Bai
+    fromTime: 16
+    toTime: 20
+    hint: "L\xE0n xa b\u1ECB container ch\u1EAFn t\u1EDBi G18. Nh\u1EA3y qua \u0111\u1ED1ng
+      th\xF9ng th\u1EA5p (Space) \u1EDF G17; qua G18 th\xEC \u0111\u1ED5i sang l\xE0n
+      kia \u0111\u1EC3 n\xE9 m\xF3c c\u1EA9u \u1EDF G18,7 (v\xF2ng \u0111\u1ECF)."
   marks:
   - time: 3
     label: "Th\xF9ng"
@@ -62,9 +68,28 @@ MonoBehaviour:
     label: "M\xF3c c\u1EA9u"
     lane: -1
   - time: 16
+    label: "Th\xF9ng th\u01B0 gi\u1EEFa"
+    lane: -1
+  - time: 17
+    label: "Th\xF9ng th\u1EA5p"
+    lane: 0
+  - time: 18
+    label: "H\u1EBFt container"
+    lane: 1
+  - time: 18.7
+    label: "M\xF3c c\u1EA9u 2"
+    lane: -1
+  - time: 19.6
     label: "Th\xF9ng th\u01B0"
     lane: -1
   ghostSpeedFactor: 0.6
+  maxGhostRecordings: 1
+  twoGhostLine: 
+  fragmentsCompleteLine: "Th\u1EBB ca n\xE0y mang t\xEAn anh. T\xF4i \u0111\xE3 x\xF3a
+    n\xF3 m\u1ED9t l\u1EA7n r\u1ED3i."
+  fragments:
+  - {fileID: 11400000, guid: 7dbe28f3062ce114fa4a31e6dcd4a088, type: 2}
+  - {fileID: 11400000, guid: 746ff8cc20f34634fb4e5dab9eea7b0f, type: 2}
   solution: "1) Nh\u1EB7t th\xF9ng \u1EDF G3 (l\xE0n g\u1EA7n, E).\n2) \u0110\u1ED5i
     sang l\xE0n xa (W), \u0111\u1EE9ng \u1EDF G5,6 v\xE0 \u0111\u1EB7t th\xF9ng (E)
     l\xEAn b\xE0n \u0111\u1EA1p t\u1EA3i G6 \u2014 c\u1EA7u n\xE2ng h\u1EA1 xu\u1ED1ng.\n3)
@@ -72,4 +97,11 @@ MonoBehaviour:
     container ch\u1EB7n t\u1EDBi G11,5.\n4) N\u1EBFu NH\u1ECAP \u0111\xE3 l\xEAn
     b\u1EADc 2 (v\xF2ng \u0111\u1ECF \u1EDF G12,5): qua kh\u1ECFi G11,6 th\xEC \u0111\u1ED5i
     sang l\xE0n c\xF2n l\u1EA1i \u0111\u1EC3 n\xE9 m\xF3c c\u1EA9u.\n5) T\u1EDBi
-    th\xF9ng th\u01B0 G16."
+    th\xF9ng th\u01B0 G16.\n6) (v3.1) B\xE3i container G16\u2013G20: l\xE0n xa b\u1ECB
+    container ch\u1EAFn t\u1EDBi G18. \u0110i l\xE0n g\u1EA7n, Space \u0111\u1EC3
+    nh\u1EA3y qua \u0111\u1ED1ng th\xF9ng th\u1EA5p \u1EDF G17. Qua G18: n\u1EBFu
+    v\xF2ng \u0111\u1ECF \u1EDF l\xE0n g\u1EA7n th\xEC \u0111\u1ED5i sang l\xE0n
+    xa \u0111\u1EC3 n\xE9 m\xF3c c\u1EA9u G18,7. T\u1EDBi th\xF9ng th\u01B0 cu\u1ED1i
+    G19,6.\nM\u1EA3nh nh\u1EDB: th\u1EBB ca c\u1EE7a ng\u01B0\u1EDDi ti\u1EC1n nhi\u1EC7m
+    (G7,4 l\xE0n xa, khu b\u1EBFn h\xE0ng), nh\u1EADt k\xFD c\u1EA7n c\u1EA9u (G12,3
+    l\xE0n xa, d\u01B0\u1EDBi c\u1EA7n c\u1EA9u)."

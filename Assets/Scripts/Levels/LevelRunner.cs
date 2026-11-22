@@ -28,6 +28,7 @@ namespace EchoShade
                 brain.zones = data.zones;
                 brain.ResetTierToEntry();
             }
+            if (brain && !brain.GetComponent<NhipPattern>()) brain.gameObject.AddComponent<NhipPattern>();
             var hud = FindAnyObjectByType<HUD>();
             if (data && hud)
             {
@@ -41,10 +42,32 @@ namespace EchoShade
         {
             var ph = PlayerHealth.Instance;
             if (ph) ph.OnDamaged += OnDamaged;
+            Mailbox.OnLevelComplete += OnLevelComplete;
+        }
+
+        /// <summary>Thoai NHIP o cuoi man da phat (v3.1: du 2 Manh nho).</summary>
+        public string EndFragmentLine { get; private set; } = "";
+
+        void OnLevelComplete(Mailbox mb)
+        {
+            if (!data || string.IsNullOrEmpty(data.fragmentsCompleteLine)) return;
+            if (MemoryStore.CountInLevel(data.levelIndex) < MemoryStore.PerLevel) return;
+            EndFragmentLine = data.fragmentsCompleteLine;
+            float delay = mb && !string.IsNullOrEmpty(mb.arrivalLine) ? 2.4f : 1.0f;
+            GameFlow.Ensure().extraLoadDelay = delay + 4.6f - GameFlow.Ensure().loadDelay;
+            StartCoroutine(SayEnd(delay));
+        }
+
+        System.Collections.IEnumerator SayEnd(float delay)
+        {
+            yield return new WaitForSecondsRealtime(delay);
+            GameLog.Info("[Manh nho] Thoai cuoi man: " + EndFragmentLine);
+            if (HUD.Instance) HUD.Instance.ShowSubtitle(EndFragmentLine, 5f, true);
         }
 
         void OnDestroy()
         {
+            Mailbox.OnLevelComplete -= OnLevelComplete;
             if (Instance == this) Instance = null;
             var ph = PlayerHealth.Instance;
             if (ph) ph.OnDamaged -= OnDamaged;

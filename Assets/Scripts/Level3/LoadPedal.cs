@@ -36,7 +36,7 @@ namespace EchoShade
             }
             if ((found != null) != IsLoaded)
             {
-                Debug.Log(found ? $"[Ban dap tai] Co tai: {found.name}" : "[Ban dap tai] Het tai");
+                GameLog.Info(found ? $"[Ban dap tai] Co tai: {found.name}" : "[Ban dap tai] Het tai");
                 if (found && HUD.Instance) HUD.Instance.ShowSubtitle("Bàn đạp tải đã nhận thùng. Cầu nâng đang hạ.", 3f, false);
             }
             IsLoaded = found; Load = found;

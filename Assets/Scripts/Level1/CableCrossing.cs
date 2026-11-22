@@ -64,7 +64,7 @@ namespace EchoShade
             khang.Teleport(b);
             Crossings++;
             IsCrossing = false;
-            Debug.Log("[Level1] Khang da qua hem bang day cap.");
+            GameLog.Info("[Level1] Khang da qua hem bang day cap.");
         }
     }
 }

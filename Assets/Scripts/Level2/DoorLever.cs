@@ -30,7 +30,7 @@ namespace EchoShade
             crate.transform.position = new Vector3(leverX, padTopY + half, laneZ);
             OpenedAtTime = crate.AnchorTime;
             IsOpen = true;
-            Debug.Log($"[Level2] Thung neo tren can (t = {crate.AnchorTime:0.00}). Cua mo.");
+            GameLog.Info($"[Level2] Thung neo tren can (t = {crate.AnchorTime:0.00}). Cua mo.");
             if (HUD.Instance) HUD.Instance.ShowSubtitle("Cần cửa đã hạ. Cửa mở.", 3f, false);
             StartCoroutine(OpenDoor());
         }

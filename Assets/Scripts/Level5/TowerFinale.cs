@@ -31,7 +31,9 @@ namespace EchoShade
 
         public bool Delivered { get; private set; }
         public bool EndingVong { get; private set; }
-        public bool SlotOpen => GhostPlayer.Instance && GhostPlayer.Instance.Active && !Delivered;
+        public bool SlotOpen => GhostPlayer.AnyActive && !Delivered;
+        /// <summary>v3.1: so bong bi neo chan luc giao thu (Ket Lang khi &gt;= 1).</summary>
+        public int BlockedGhostsAtDelivery { get; private set; }
         LevelClock _clock;
         Material _real, _fake, _choice;
         Vector3 _shutter0;
@@ -69,15 +71,18 @@ namespace EchoShade
         IEnumerator Deliver()
         {
             Delivered = true;
-            var g = GhostPlayer.Instance;
-            bool blocked = g && g.PathBlockedAhead();
+            // v3.1: co the co 2 bong. Ket Lang neu IT NHAT MOT bong bi vat neo chan (dang dung hoac quy dao con lai dam vat neo).
+            int active = 0, nBlocked = 0;
+            foreach (var gp in GhostPlayer.All) if (gp && gp.Active) { active++; if (gp.PathBlockedAhead()) nBlocked++; }
+            BlockedGhostsAtDelivery = nBlocked;
+            bool blocked = nBlocked > 0;
             EndingVong = !blocked;
-            Debug.Log($"[Man 5] Thu vao khe that. Bong bi neo chan = {blocked} => {(EndingVong ? "KET VONG" : "KET LANG")}");
+            GameLog.Info($"[Man 5] Thu vao khe that. Bong dang di = {active}, bi neo chan = {nBlocked} => {(EndingVong ? "KET VONG" : "KET LANG")}");
             if (brain) brain.tierCap = brain.Tier;
             if (eye) eye.off = true;
             Say("...Một lá thư gửi cho tôi? ‘Giờ đã đủ đúng rồi, NHỊP. Nghỉ đi.’ ...Đã đọc. Ngừng quan sát.", 6f, true);
             GameFlow.Ensure().SetEnding(EndingVong);
-            if (g && !blocked) g.playbackBoost = 3f;
+            if (!blocked) foreach (var gp in GhostPlayer.All) if (gp && gp.Active) gp.playbackBoost = 3f;
             float t0 = Time.time;
             while (Time.time - t0 < outroSeconds)
             {

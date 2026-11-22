@@ -7,7 +7,7 @@ namespace EchoShade
 {
     /// <summary>
     /// Thanh thoi gian mong: phan da di, vach su kien (LevelData.marks), chu thoi gian / huong / so lan tua.
-    /// Hieu ung tua nguoc: man hinh phu mau xanh lanh khi thoi gian chay nguoc.
+    /// Hieu ung tua nguoc: xem RewindFX.
     /// Esc: tam dung (Time.timeScale = 0). Khi tam dung: M = ve menu chinh.
     /// </summary>
     public class TimeBarUI : MonoBehaviour
@@ -28,8 +28,6 @@ namespace EchoShade
         int _lastTimeCs = int.MinValue, _lastRewindDs = int.MinValue, _lastCount = int.MinValue;
         bool _lastQualified;
         TimeDirection _lastDir;
-        Image _rewindTint;
-        float _tintA;
 
         void Start()
         {
@@ -37,11 +35,9 @@ namespace EchoShade
             if (!pausePanel) { var p = transform.Find("PausePanel"); if (p) pausePanel = p.gameObject; }
             if (pausePanel) pausePanel.SetActive(false);
             BuildMarks();
-            var go = new GameObject("RewindTint", typeof(RectTransform), typeof(Image));
-            go.transform.SetParent(transform, false);
-            go.transform.SetAsFirstSibling();
-            var rt = (RectTransform)go.transform; rt.anchorMin = Vector2.zero; rt.anchorMax = Vector2.one; rt.offsetMin = rt.offsetMax = Vector2.zero;
-            _rewindTint = go.GetComponent<Image>(); _rewindTint.raycastTarget = false; _rewindTint.color = new Color(0.3f, 0.6f, 1f, 0f);
+            // Hieu ung tua: thay lop phu xanh toan man hinh bang RewindFX (giam bao hoa, vignette, vach quet).
+            var fx = gameObject.GetComponent<RewindFX>(); if (!fx) fx = gameObject.AddComponent<RewindFX>();
+            fx.clock = clock;
         }
 
         void BuildMarks()
@@ -94,13 +90,6 @@ namespace EchoShade
                 default: dir = "||"; c = frozenColor; break;
             }
             if (fillImage) fillImage.color = c;
-
-            if (_rewindTint)
-            {
-                float want = clock.Direction == TimeDirection.Backward ? (clock.CurrentRewindQualified ? 0.16f : 0.09f) : 0f;
-                _tintA = Mathf.MoveTowards(_tintA, want, Time.unscaledDeltaTime * 0.6f);
-                _rewindTint.color = new Color(0.3f, 0.6f, 1f, _tintA);
-            }
 
             int timeCs = Mathf.RoundToInt(clock.CurrentTime * 100f);
             int rewindDs = Mathf.RoundToInt(clock.CurrentRewindAmount * 10f);

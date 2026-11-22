@@ -60,7 +60,7 @@ namespace EchoShade
             if (IsInvulnerable && !respawnToCheckpoint) return false;
             HP = Mathf.Max(0, HP - amount);
             _invUntil = Time.time + invulnerableTime;
-            Debug.Log($"[Khang] -{amount} HP ({source}). HP = {HP}");
+            GameLog.Info($"[Khang] -{amount} HP ({source}). HP = {HP}");
             OnHPChanged?.Invoke(HP);
             OnDamaged?.Invoke(source, clock ? clock.CurrentTime : 0f);
 

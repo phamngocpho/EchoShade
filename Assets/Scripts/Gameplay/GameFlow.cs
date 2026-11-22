@@ -23,6 +23,8 @@ namespace EchoShade
         public const string UnlockKey = "ES_Unlocked";
         public string[] sceneOrder = { "Level1", "Level2", "Level3", "Level4", "Level5", "End" };
         public float loadDelay = 2f;
+        [Tooltip("Cong them vao loadDelay cho lan nap man ke tiep (vd. de doc thoai cuoi man). Tu ve 0 sau khi dung.")]
+        public float extraLoadDelay = 0f;
 
         public int TotalRewinds { get; private set; }
         public int MaxTier { get; private set; }
@@ -60,11 +62,12 @@ namespace EchoShade
             CompletedLevels.Add(sceneName);
             int idx = System.Array.IndexOf(sceneOrder, sceneName);
             if (idx >= 0 && idx + 2 > Unlocked) { PlayerPrefs.SetInt(UnlockKey, Mathf.Min(5, idx + 2)); PlayerPrefs.Save(); }
-            Debug.Log($"[GameFlow] Xong {sceneName}: tua={rewinds}, bacMax={tier}. Tong tua={TotalRewinds}, bac cao nhat={MaxTier}");
+            GameLog.Info($"[GameFlow] Xong {sceneName}: tua={rewinds}, bacMax={tier}. Tong tua={TotalRewinds}, bac cao nhat={MaxTier}");
 
             string next = NextScene(sceneName);
-            if (next == null) { Debug.Log("[GameFlow] Khong con man tiep theo trong Build Settings."); return null; }
-            StartCoroutine(LoadAfterDelay(next, loadDelay));
+            if (next == null) { GameLog.Info("[GameFlow] Khong con man tiep theo trong Build Settings."); return null; }
+            StartCoroutine(LoadAfterDelay(next, loadDelay + Mathf.Max(0f, extraLoadDelay)));
+            extraLoadDelay = 0f;
             return next;
         }
 
@@ -72,7 +75,7 @@ namespace EchoShade
         {
             HasEnding = true; EndingVong = vong;
             PlayerPrefs.SetInt(vong ? "ES_SeenVong" : "ES_SeenLang", 1); PlayerPrefs.Save();
-            Debug.Log("[GameFlow] Ket: " + (vong ? "Ket Vong" : "Ket Lang"));
+            GameLog.Info("[GameFlow] Ket: " + (vong ? "Ket Vong" : "Ket Lang"));
         }
 
         /// <summary>Choi lai tu dau: xoa thong ke tong.</summary>
@@ -84,6 +87,8 @@ namespace EchoShade
             MaxTier = 0;
             HasEnding = false; EndingVong = false;
             CompletedLevels.Clear();
+            extraLoadDelay = 0f;
+            MemoryStore.ResetRun();
         }
 
         public void StartLevel(int levelIndex)

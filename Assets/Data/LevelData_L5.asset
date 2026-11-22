@@ -18,12 +18,12 @@ MonoBehaviour:
   rulerSeconds: 30
   entryTier: 1
   tierCap: 3
-  objective: "T\u1EA7ng 1: l\u1EEBa NH\u1ECAP canh nh\u1EA7m c\u1EEDa. T\u1EA7ng
-    2: d\xF9ng \u1EA2nh v\u1ECDng k\xE9o m\u1EAFt th\xE1p \u0111i, giao th\u01B0
-    v\xE0o khe th\u1EADt (G28, l\xE0n xa)."
-  startLine: "\u0110\xE2y l\xE0 th\xE1p c\u1EE7a t\xF4i. M\u1ED7i b\u01B0\u1EDBc
-    anh \u0111i trong n\xE0y, t\xF4i \u0111\u1EC1u \u0111\xE3 h\u1ECDc \u1EDF b\u1ED1n
-    n\u01A1i tr\u01B0\u1EDBc."
+  objective: "T\u1EA7ng 1: l\u1EEBa NH\u1ECAP canh nh\u1EA7m c\u1EEDa (ph\xF2ng ph\u1EE5
+    sau tia kh\xF3a c\xF3 th\u1EC3 b\u1ECF qua). T\u1EA7ng 2: d\xF9ng \u1EA2nh v\u1ECDng
+    k\xE9o m\u1EAFt th\xE1p \u0111i, giao th\u01B0 v\xE0o khe th\u1EADt (G28, l\xE0n
+    xa)."
+  startLine: "T\xF4i \u0111\xE3 th\u1EA5y m\u1EB7t anh. \u0110\u1EEBng \u0111\u01B0a
+    l\xE1 th\u01B0 \u0111\xF3 cho c\xE1i th\xE1p."
   tierUpLines:
   - 
   - 
@@ -42,6 +42,12 @@ MonoBehaviour:
       cho NH\u1ECAP nh\xECn, r\u1ED3i l\xF9i m\u1ED9t m\u1EA1ch v\u1EC1 G2 \u2014
       NH\u1ECAP s\u1EBD ch\u1EB7n l\xE0n g\u1EA7n. Sau \u0111\xF3 \u0111\u1ED5i sang
       l\xE0n xa \u1EDF ng\xE3 ba."
+  - name: L5_Phong
+    fromTime: 9.5
+    toTime: 11
+    hint: "Ph\xF2ng ph\u1EE5 sau tia kh\xF3a (l\xE0n g\u1EA7n, cu\u1ED1i h\xE0nh
+      lang): canh l\xFAc tia t\u1EAFt r\u1ED3i \u0111i qua. C\xF3 th\u1EC3 b\u1ECF
+      qua \u2014 v\xE0o s\xE2u th\xEC ph\u1EA3i l\xF9i ra xa h\u01A1n."
   - name: L5_Thang
     fromTime: 9.4
     toTime: 12.5
@@ -59,7 +65,9 @@ MonoBehaviour:
       v\u1ECDng. L\xF9i m\u1ED9t m\u1EA1ch tr\xEAn t\u1EA7ng 2 (vd G27 v\u1EC1 G16)
       \u0111\u1EC3 g\u1ECDi b\xF3ng, r\u1ED3i \u0111i l\xE0n KH\xC1C l\xE0n c\u1EE7a
       b\xF3ng. Khe th\u1EADt \u1EDF G28 l\xE0n xa ch\u1EC9 m\u1EDF khi b\xF3ng \u0111ang
-      \u0111i."
+      \u0111i. \u1EDE b\u1EADc 3, m\u1ED7i l\u1EA7n l\xF9i m\u1ED9t m\u1EA1ch l\u01B0u
+      th\xEAm m\u1ED9t b\u1EA3n ghi: t\u1ED1i \u0111a hai b\xF3ng \u0111i c\xF9ng
+      l\xFAc, tia \u0111\u1ECF b\xE1m b\xF3ng m\u1EDBi nh\u1EA5t."
   marks:
   - time: 2
     label: "Ng\xE3 ba"
@@ -67,9 +75,15 @@ MonoBehaviour:
   - time: 9
     label: "C\u1EEDa gi\u1EA3 / c\u1EEDa th\u1EADt"
     lane: -1
+  - time: 10.3
+    label: "Ph\xF2ng ph\u1EE5"
+    lane: 0
   - time: 13
     label: "Th\xF9ng th\u01B0 gi\u1EEFa"
     lane: -1
+  - time: 15.6
+    label: "M\u1EA3nh nh\u1EDB"
+    lane: 1
   - time: 18
     label: "C\u1ED9t s\xE1ng"
     lane: -1
@@ -83,6 +97,15 @@ MonoBehaviour:
     label: "Khe th\u01B0"
     lane: 1
   ghostSpeedFactor: 0.6
+  maxGhostRecordings: 2
+  twoGhostLine: "Hai \u0111\u01B0\u1EDDng. T\xF4i kh\xF4ng bi\u1EBFt \u0111\u01B0\u1EDDng
+    n\xE0o l\xE0 anh."
+  fragmentsCompleteLine: "B\u1EA3n nh\xE1p n\xE0y c\xF9ng n\xE9t ch\u1EEF v\u1EDBi
+    l\xE1 th\u01B0. Anh \u0111\xE3 vi\u1EBFt n\xF3 nhi\u1EC1u l\u1EA7n h\u01A1n anh
+    nh\u1EDB."
+  fragments:
+  - {fileID: 11400000, guid: ab7da7b43fe465b41bd80548b8c95263, type: 2}
+  - {fileID: 11400000, guid: 72add9bf7ed60e7409eac4b31e85572e, type: 2}
   solution: "T\u1EA6NG 1: 1) \u0110i l\xE0n g\u1EA7n t\u1EDBi c\u1EEDa gi\u1EA3 G9
     (G9,2\u20139,4), \u0111\u1EE9ng y\xEAn 2 gi\xE2y. 2) L\xF9i m\u1ED9t m\u1EA1ch
     v\u1EC1 G2 (b\u1EADc 2, NH\u1ECAP ch\u1ED1t l\xE0n g\u1EA7n, thanh ch\u1EAFn
@@ -100,4 +123,15 @@ MonoBehaviour:
     (tia kh\xF3a v\xE0o b\xF3ng \u1EDF l\xE0n xa). 9) Qua G27,6 th\xEC \u0111\u1ED5i
     sang l\xE0n xa, t\u1EDBi khe th\u1EADt G28 v\xE0 b\u1EA5m E. B\xF3ng b\u1ECB
     th\xF9ng ch\u1EB7n > K\u1EBFt L\u1EB7ng; b\xF3ng \u0111i h\u1EBFt \u0111\u01B0\u1EDDng
-    > K\u1EBFt V\u1ECDng."
+    > K\u1EBFt V\u1ECDng.\n(v3.1) T\xF9y ch\u1ECDn t\u1EA7ng 1: ph\xF2ng ph\u1EE5
+    \u1EDF cu\u1ED1i l\xE0n g\u1EA7n (G9,5\u201310,9), sau m\u1ED9t tia kh\xF3a nh\u1EA5p
+    nh\xE1y theo gi\u1EDD th\u1EF1c \u2014 \u0111i qua l\xFAc tia t\u1EAFt; M\u1EA3nh
+    nh\u1EDB \"\u1EA3nh ch\u1EE5p ca \u0111\xEAm\" \u1EDF G10,55. L\xF9i ra t\u1EEB
+    \u0111\xF3 d\xE0i h\u01A1n nh\u01B0ng v\u1EABn l\xE0 m\u1ED9t l\u1EA7n tua (\u0111\u1EE9ng
+    \u1EDF c\u1EEDa gi\u1EA3 G9 tr\u01B0\u1EDBc khi v\xE0o th\xEC NH\u1ECAP v\u1EABn
+    ch\u1ED1t l\xE0n g\u1EA7n).\nT\u1EA7ng 2: \"l\xE1 th\u01B0 nh\xE1p\" \u1EDF G15,6
+    l\xE0n xa. \u1EDE b\u1EADc 3, m\u1ED7i l\u1EA7n l\xF9i m\u1ED9t m\u1EA1ch l\u01B0u
+    m\u1ED9t b\u1EA3n ghi (t\u1ED1i \u0111a 2, b\u1EA3n m\u1EDBi thay b\u1EA3n c\u0169
+    nh\u1EA5t); hai b\xF3ng \u0111i c\xF9ng l\xFAc, \u0111\u1EC1u b\u1ECB th\xF9ng
+    neo ch\u1EB7n. Ch\u1EC9 c\u1EA7n M\u1ED8T b\xF3ng b\u1ECB th\xF9ng \u1EDF \xF4
+    v\xE0ng G25 ch\u1EB7n l\xE0 K\u1EBFt L\u1EB7ng."

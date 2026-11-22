@@ -29,7 +29,7 @@ namespace EchoShade
             var ph = PlayerHealth.Instance;
             bool khangUnder = ph && panel && Mathf.Abs(ph.transform.position.x - _closed.x) < halfWidth && Mathf.Abs(ph.transform.position.z - _closed.z) < 0.9f;
             bool wantOpen = (pedal && pedal.Pressed) || (IsOpen && khangUnder);
-            if (wantOpen != IsOpen) Debug.Log("[Cua xuong] " + (wantOpen ? "MO" : "dong"));
+            if (wantOpen != IsOpen) GameLog.Info("[Cua xuong] " + (wantOpen ? "MO" : "dong"));
             IsOpen = wantOpen;
             if (panel) panel.position = Vector3.MoveTowards(panel.position, _closed + (IsOpen ? Vector3.up * openHeight : Vector3.zero), speed * Time.deltaTime);
             if (blocker) blocker.enabled = !IsOpen || (panel && panel.position.y < _closed.y + openHeight * 0.6f && !khangUnder);

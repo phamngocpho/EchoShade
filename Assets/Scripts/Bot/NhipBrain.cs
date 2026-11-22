@@ -147,7 +147,7 @@ namespace EchoShade
         void AddEntry(NhipMemoryEntry e)
         {
             memory.Add(e);
-            Debug.Log($"[NHIP] Ghi nho #{e.rewindIndex}: vung={e.zone} lan={(e.lane == 0 ? "GAN" : "XA")} dung={e.stopSeconds:0.0}s@x={e.stopX:0.0} neo={e.anchorPlaced}");
+            GameLog.Info($"[NHIP] Ghi nho #{e.rewindIndex}: vung={e.zone} lan={(e.lane == 0 ? "GAN" : "XA")} dung={e.stopSeconds:0.0}s@x={e.stopX:0.0} neo={e.anchorPlaced}");
         }
 
         public NhipMemoryEntry RecallLatest(string zone)
@@ -175,7 +175,7 @@ namespace EchoShade
             {
                 int last = memory[memory.Count - 1].rewindIndex;
                 int n = memory.RemoveAll(m => m.rewindIndex == last);
-                Debug.Log($"[NHIP] Quen {n} dong cua lan tua #{last}");
+                GameLog.Info($"[NHIP] Quen {n} dong cua lan tua #{last}");
             }
             ForgetCount++;
             OnForget?.Invoke();
@@ -187,7 +187,7 @@ namespace EchoShade
             int old = Tier;
             Tier = t;
             if (Tier > MaxTierReached) MaxTierReached = Tier;
-            Debug.Log($"[NHIP] Bac {old} -> {Tier}");
+            GameLog.Info($"[NHIP] Bac {old} -> {Tier}");
             OnTierChanged?.Invoke(old, Tier);
         }
 

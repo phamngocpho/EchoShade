@@ -19,6 +19,9 @@ namespace EchoShade
         public TMP_Text bannerText;
         [Tooltip("Dong goi y (tuy chon). Khong co thi dung phu de.")]
         public TMP_Text hintText;
+        [Tooltip("v3.1: dem Manh nho. De trong = tu tao ban sao cua TierText ngay duoi no.")]
+        public TMP_Text fragmentText;
+        public Color fragmentColor = new Color(0.62f, 0.85f, 1f);
 
         [TextArea] public string objective = "Mang móc qua hẻm trước khi càng máy lấy mất.";
         [TextArea] public string startLine = "Ca giao đã trễ. Lịch không có chỗ cho thư đến muộn. Hãy quay lại vạch bắt đầu.";
@@ -38,7 +41,7 @@ namespace EchoShade
         int _lastTier = int.MinValue, _lastCap = int.MinValue;
 
         void Awake() { Instance = this; }
-        void OnDestroy() { if (Instance == this) Instance = null; }
+        void OnDestroy() { if (Instance == this) Instance = null; MemoryStore.OnChanged -= OnFragments; }
 
         void Start()
         {
@@ -48,6 +51,31 @@ namespace EchoShade
             ShowSubtitle(startLine, startLineDuration, true);
             _brain = NhipBrain.Instance;
             if (_brain) _brain.OnTierChanged += OnTier;
+            if (!fragmentText && tierText)
+            {
+                var go = Instantiate(tierText.gameObject, tierText.transform.parent);
+                go.name = "FragmentText";
+                fragmentText = go.GetComponent<TMP_Text>();
+                var a = (RectTransform)tierText.transform; var b = (RectTransform)go.transform;
+                b.anchoredPosition = a.anchoredPosition + new Vector2(0f, -40f);
+                fragmentText.fontSize = 24;
+            }
+            MemoryStore.OnChanged += OnFragments;
+            RefreshFragments();
+        }
+
+        float _fragFlashUntil;
+        void OnFragments(string id) { if (id != null) _fragFlashUntil = Time.unscaledTime + 1.5f; RefreshFragments(); }
+
+        public string FragmentLabel { get; private set; } = "";
+
+        void RefreshFragments()
+        {
+            if (!fragmentText) return;
+            var lr = LevelRunner.Instance;
+            int lvl = lr && lr.data ? lr.data.levelIndex : 0;
+            FragmentLabel = $"Mảnh nhớ: {MemoryStore.Count}/{MemoryStore.Total}" + (lvl > 0 ? $"  ·  màn này {MemoryStore.CountInLevel(lvl)}/{MemoryStore.PerLevel}" : "");
+            fragmentText.text = FragmentLabel;
         }
 
         public void SetObjective(string text)
@@ -112,6 +140,13 @@ namespace EchoShade
                 if (Time.unscaledTime < _tierFlashUntil && Mathf.Repeat(Time.unscaledTime * 6f, 1f) > 0.5f) c = Color.white;
                 tierText.color = c;
                 tierText.fontSize = Time.unscaledTime < _tierFlashUntil ? 38 : 30;
+            }
+
+            if (fragmentText)
+            {
+                bool flash = Time.unscaledTime < _fragFlashUntil;
+                fragmentText.color = flash && Mathf.Repeat(Time.unscaledTime * 5f, 1f) > 0.5f ? Color.white : fragmentColor;
+                fragmentText.fontSize = flash ? 28 : 24;
             }
 
             if (subtitleText && subtitleText.gameObject.activeSelf && Time.unscaledTime > _subUntil)

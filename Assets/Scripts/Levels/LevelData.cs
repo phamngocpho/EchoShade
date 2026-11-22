@@ -58,6 +58,14 @@ namespace EchoShade
         [Tooltip("He so toc do cua bong so voi toc do di cua Khang (v2: 0,6).")]
         public float ghostSpeedFactor = 0.6f;
 
+        [Header("v3.1: Manh nho, 2 ban ghi, thoai")]
+        [Tooltip("So ban ghi Anh vong toi da phat dong thoi (v3.1: chi Man 5 = 2).")]
+        public int maxGhostRecordings = 1;
+        [TextArea] public string twoGhostLine;
+        [Tooltip("Thoai NHIP o cuoi man khi da nhat du 2 Manh nho cua man.")]
+        [TextArea] public string fragmentsCompleteLine;
+        public MemoryFragmentData[] fragments = new MemoryFragmentData[0];
+
         [Header("Tai lieu")]
         [TextArea(6, 20)] public string solution;
 

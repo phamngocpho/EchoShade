@@ -19,6 +19,10 @@ namespace EchoShade
         public enum ItemState { Timeline, Held, Anchored }
 
         public static readonly List<HoldableItem> All = new List<HoldableItem>();
+        /// <summary>v3.1: ban ra khi Khang dat vat xuong (NhipPattern dem "dat neo cung cho").</summary>
+        public static event System.Action<HoldableItem> OnPlaced;
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        static void ResetStatics() { OnPlaced = null; }
 
         [Tooltip("Trang thai ban dau. Vat khong co TimelineObject nen de Anchored.")]
         public ItemState startState = ItemState.Anchored;
@@ -89,7 +93,8 @@ namespace EchoShade
             AnchorPosition = worldPos;
             SetColliders(true);
             if (!ground) { _falling = true; _fallVy = 0f; SetColliders(false); }
-            Debug.Log($"[Vat neo] {name} dat tai x={worldPos.x:0.00} z={worldPos.z:0.0} t={AnchorTime:0.00}{(ground ? "" : " (khong co san - roi)")}");
+            GameLog.Info($"[Vat neo] {name} dat tai x={worldPos.x:0.00} z={worldPos.z:0.0} t={AnchorTime:0.00}{(ground ? "" : " (khong co san - roi)")}");
+            if (ground) OnPlaced?.Invoke(this);
         }
 
         /// <summary>v1: tra vat ve dong thoi gian goc. v2 dung ReturnHome() thay the.</summary>
@@ -128,7 +133,7 @@ namespace EchoShade
         {
             IsReturning = true;
             ReturnCount++;
-            Debug.Log($"[Hoi vi] {name} ve diem goc ({reason}). Khong mat mau, khong tinh lan tua.");
+            GameLog.Info($"[Hoi vi] {name} ve diem goc ({reason}). Khong mat mau, khong tinh lan tua.");
             if (HUD.Instance) HUD.Instance.ShowSubtitle("Hồi vị: " + reason + " — vật quay về chỗ cũ.", 3f, false);
             transform.SetParent(null, true);
             SetColliders(false);
@@ -172,8 +177,8 @@ namespace EchoShade
         {
             var ph = PlayerHealth.Instance;
             if (ph && Mathf.Abs(ph.transform.position.x - p.x) < 0.9f && Mathf.Abs(ph.transform.position.z - p.z) < 0.9f) return true;
-            var g = GhostPlayer.Instance;
-            if (g && g.Active && Mathf.Abs(g.Position.x - p.x) < 0.9f && Mathf.Abs(g.Position.z - p.z) < 0.9f) return true;
+            foreach (var g in GhostPlayer.All)
+                if (g && g.Active && Mathf.Abs(g.Position.x - p.x) < 0.9f && Mathf.Abs(g.Position.z - p.z) < 0.9f) return true;
             return false;
         }
 

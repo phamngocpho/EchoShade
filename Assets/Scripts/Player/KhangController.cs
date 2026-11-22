@@ -143,8 +143,8 @@ namespace EchoShade
             if (!found) return false;
             float land = dir > 0 ? best.max.x + _cc.radius + 0.15f : best.min.x - _cc.radius - 0.15f;
             if (clock) land = Mathf.Clamp(land, clock.levelStartX, clock.levelEndX);
-            var g = GhostPlayer.Instance;
-            if (g && g.Active && Mathf.Abs(g.Position.x - land) < 0.7f && Mathf.Abs(g.Position.z - transform.position.z) < 0.9f) return false;
+            foreach (var g in GhostPlayer.All)
+                if (g && g.Active && Mathf.Abs(g.Position.x - land) < 0.7f && Mathf.Abs(g.Position.z - transform.position.z) < 0.9f) return false;
             StartCoroutine(Vault(land, best.max.y - feet));
             return true;
         }

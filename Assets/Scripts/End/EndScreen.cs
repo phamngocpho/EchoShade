@@ -19,6 +19,8 @@ namespace EchoShade
         public const string LangLine = "Không đủ dữ liệu để chắc. Lần này tôi quên. Anh đi giao nốt những thư còn lại.";
         public const string VongLine = "Thư đã tới. Tôi cũng đã thuộc đường của anh. Lần khác tôi đứng sẵn ở đó.";
         public const string LangDesc = "Ảnh vọng bị thùng neo chặn ở G25. Tháp tắt từng vòng, bóng đứng yên rồi tan. Toa tàu treo trên trời hạ xuống ray, như một lịch mới.";
+        public const string LangAllLine = "Anh mang theo đủ mười mảnh. Tôi để anh giữ chúng. Lịch không cần nhớ thay anh nữa.";
+        public const string VongAllLine = "Mười mảnh, đủ thành một người. Ca đêm sau, tôi sẽ gọi đúng tên anh.";
         public const string VongDesc = "Ảnh vọng đi hết quỹ đạo. Tháp tắt, thành phố chạy lại. Trên sân thượng phố Cũ, một Khang trong suốt vẫn bước đúng ca đêm đó.";
 
         public TMP_Text titleText, lineText, statsText, descText, unseenText;
@@ -31,6 +33,8 @@ namespace EchoShade
         public string EndingName { get; private set; }
         public string EndingLine { get; private set; }
         public bool IsVong { get; private set; }
+        /// <summary>v3.1: dong thoai phu khi du 10 Manh nho (rong neu chua du).</summary>
+        public string ExtraLine { get; private set; } = "";
 
         void Start()
         {
@@ -48,9 +52,10 @@ namespace EchoShade
             EndingName = vong ? VongName : LangName;
             EndingLine = vong ? VongLine : LangLine;
             if (titleText) titleText.text = EndingName.ToUpperInvariant();
-            if (lineText) lineText.text = "NHỊP: “" + EndingLine + "”";
+            ExtraLine = MemoryStore.AllCollected ? (vong ? VongAllLine : LangAllLine) : "";
+            if (lineText) lineText.text = "NHỊP: “" + EndingLine + "”" + (ExtraLine.Length > 0 ? "\n<size=85%><color=#9fd8ff>NHỊP: “" + ExtraLine + "”</color></size>" : "");
             if (descText) descText.text = vong ? VongDesc : LangDesc;
-            if (statsText) statsText.text = $"Tổng số lần tua: {rewinds}     Bậc NHỊP cao nhất: {maxTier}     Kết: {EndingName}";
+            if (statsText) statsText.text = $"Tổng số lần tua: {rewinds}     Bậc NHỊP cao nhất: {maxTier}     Mảnh nhớ: {MemoryStore.Count}/{MemoryStore.Total}     Kết: {EndingName}";
             if (langRoot) langRoot.SetActive(!vong);
             if (vongRoot) vongRoot.SetActive(vong);
             if (unseenText)

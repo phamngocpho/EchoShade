@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba5fa67ced8285e49b14b6b22106fde4, type: 3}
+  m_Name: MF_L5_B
+  m_EditorClassIdentifier: Assembly-CSharp::EchoShade.MemoryFragmentData
+  id: L5_B
+  levelIndex: 5
+  displayName: "\u1EA2nh ch\u1EE5p ca \u0111\xEAm"
+  note: "Hai ng\u01B0\u1EDDi \u0111\u01B0a th\u01B0 \u0111\u1EE9ng c\u1EA1nh nhau
+    tr\u01B0\u1EDBc th\xE1p. C\u1EA3 hai \u0111\u1EC1u l\xE0 anh."
+  nhipLine: 

@@ -42,7 +42,7 @@ namespace EchoShade.Dev
             var it = ph ? ph.GetComponent<KhangInteractor>() : null;
             return $"t={(c ? F(c.CurrentTime) : "-")} x={(k ? F(k.transform.position.x) : "-")} y={(k ? F(k.transform.position.y) : "-")} lane={(k ? k.CurrentLane.ToString() : "-")} " +
                    $"tier={(b ? b.Tier : -1)} rew={(c ? c.RewindCount : -1)} hp={(ph ? ph.HP : -1)} deaths={(ph ? ph.Deaths : -1)} held={(it && it.Held ? it.Held.name : "-")} " +
-                   $"ghost={(g ? (g.Active ? (g.BlockedByAnchor ? "blocked" : g.Finished ? "finished" : "walking") + "@" + F(g.Position.x) : "off") : "none")} done={Mailbox.LevelCompleted}";
+                   $"ghost={(g ? (g.Active ? (g.BlockedByAnchor ? "blocked" : g.Finished ? "finished" : "walking") + "@" + F(g.Position.x) : "off") : "none")} ghosts={GhostPlayer.ActiveCount} mem={MemoryStore.Count} done={Mailbox.LevelCompleted}";
         }
 
         IEnumerator Go()
@@ -89,12 +89,37 @@ namespace EchoShade.Dev
                     case "waitghost":
                         while (Time.time - t0 < 40f)
                         {
-                            var g = GhostPlayer.Instance;
-                            if (!g || !g.Active || g.Finished || g.BlockedByAnchor) break;
+                            bool walking = false;
+                            foreach (var g in GhostPlayer.All) if (g && g.Active && !g.Finished && !g.BlockedByAnchor) walking = true;
+                            if (!walking) break;
                             yield return null;
                         }
                         break;
                     case "log": break;
+                    case "ghosts":
+                        foreach (var g in GhostPlayer.All)
+                            Log.AppendLine($"  ghost#{g.slot} active={g.Active} {(g.BlockedByAnchor ? "blocked" : g.Finished ? "finished" : "walking")}@{F(g.Position.x)} lane={g.Lane} spawns={g.SpawnCount}");
+                        Log.AppendLine($"  twoGhostLines={GhostPlayer.TwoGhostLineCount} recordings={(KhangTrail.Instance ? KhangTrail.Instance.Recordings.Count : -1)}");
+                        break;
+                    case "frag":
+                        Log.AppendLine($"  frag total={MemoryStore.Count} ids=[{string.Join(",", MemoryStore.Order)}]");
+                        break;
+                    case "fill": MemoryStore.DebugFill(5, (int)arg); break;
+                    case "ruler":
+                        { var lc = LevelClock.Instance; var lr = Object.FindAnyObjectByType<LevelRunner>(); Log.AppendLine(lc ? $"  ruler dur={F(lc.duration)} x={F(lc.levelStartX)}..{F(lc.levelEndX)} data={(lr && lr.data ? F(lr.data.rulerSeconds) : "-")} frags={(lr && lr.data && lr.data.fragments != null ? lr.data.fragments.Length : -1)} maxGhost={(lr && lr.data ? lr.data.maxGhostRecordings : -1)}" : "  ruler none"); }
+                        break;
+                    case "waitbeam":
+                        {
+                            var beams = Object.FindObjectsByType<BlinkBeam>(FindObjectsSortMode.None);
+                            if (beams.Length == 0) break;
+                            while (!beams[0].IsOn && Time.time - t0 < 5f) yield return null;
+                            while (beams[0].IsOn && Time.time - t0 < 8f) yield return null;
+                        }
+                        break;
+                    case "pattern":
+                        { var pt = NhipPattern.Instance; Log.AppendLine(pt ? $"  pattern habit={pt.LaneHabit} streak={pt.LaneStreak} spot={pt.SpotRepeats} said={pt.LinesSaid} last='{pt.LastLine}'" : "  pattern none"); }
+                        break;
+                    case "sub": Log.AppendLine("  sub='" + (HUD.Instance ? HUD.Instance.CurrentSubtitle.Replace("\n", " / ") : "") + "' hint='" + (HUD.Instance ? HUD.Instance.CurrentHint : "") + "'"); break;
                     case "mem": { var b = NhipBrain.Instance; Log.AppendLine("  mem " + parts[1] + " = " + (b ? b.RecallLane(parts[1], -1).ToString() : "-") + " entries=" + (b ? b.memory.Count : 0)); break; }
                     case "shot":
                         if (!string.IsNullOrEmpty(ShotDir) && parts.Length > 1)

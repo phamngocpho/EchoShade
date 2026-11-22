@@ -33,12 +33,12 @@ namespace EchoShade
         {
             var ph = PlayerHealth.Instance;
             KhangOn = ph && On(ph.transform.position, ph.transform.position.y - 1f);
-            var g = GhostPlayer.Instance;
-            GhostOn = g && g.Active && On(g.Position, g.Position.y);
+            GhostOn = false;
+            foreach (var g in GhostPlayer.All) if (g && g.Active && On(g.Position, g.Position.y)) { GhostOn = true; break; }
             if (Pressed != _was)
             {
                 _was = Pressed;
-                Debug.Log($"[Ban dap cam bien] {(Pressed ? "NHAN" : "nha")} (Khang={KhangOn}, bong={GhostOn})");
+                GameLog.Info($"[Ban dap cam bien] {(Pressed ? "NHAN" : "nha")} (Khang={KhangOn}, bong={GhostOn})");
             }
             if (plate) plate.localPosition = Vector3.Lerp(plate.localPosition, _plateUp + (Pressed ? Vector3.down * pressDepth : Vector3.zero), 1f - Mathf.Exp(-12f * Time.deltaTime));
             if (_lampMat)

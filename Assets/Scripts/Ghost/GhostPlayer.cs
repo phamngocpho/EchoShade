@@ -14,11 +14,33 @@ namespace EchoShade
     ///  - Bi neo chan: quy dao dam vao vat neo => dung tai cho, dung yen cho toi khi bac < 3.
     ///  - Het quy dao: dung yen o diem cuoi. Bien mat khi bac < 3 hoac khi Khang ve thung thu.
     ///  - De ban dap cam bien nhu nguoi that (SensorPedal doc vi tri cua bong).
+    ///  - v3.1 (muc 3.2): LevelData.maxGhostRecordings = 2 (chi Man 5) => moi lan tua o bac 3 luu mot ban ghi
+    ///    (KhangTrail.StoreRecording), toi da 2; ban moi thay ban cu nhat. Moi ban do mot instance GhostPlayer
+    ///    rieng phat (slot 0, 1), chay dong thoi, deu bi vat neo chan. Khong co giao dien chon ban ghi.
+    ///    Instance = bong moi xuat hien gan nhat (tia khoa / mat thap bam theo bong nay).
     /// </summary>
     [DefaultExecutionOrder(60)]
     public class GhostPlayer : MonoBehaviour
     {
-        public static GhostPlayer Instance { get; private set; }
+        public static readonly List<GhostPlayer> All = new List<GhostPlayer>();
+        static GhostPlayer _primary;
+        static int _stampCounter;
+
+        /// <summary>Bong dang hien moi xuat hien gan nhat; khong co bong nao thi tra ve bong chinh (slot 0).</summary>
+        public static GhostPlayer Instance
+        {
+            get
+            {
+                GhostPlayer best = null;
+                foreach (var g in All) if (g && g.Active && (!best || g._stamp > best._stamp)) best = g;
+                return best ? best : _primary;
+            }
+        }
+        public static int ActiveCount { get { int n = 0; foreach (var g in All) if (g && g.Active) n++; return n; } }
+        public static bool AnyActive => ActiveCount > 0;
+
+        [Tooltip("0 = bong chinh (nhan su kien tua va chia ban ghi cho cac bong khac).")]
+        public int slot = 0;
 
         public NhipBrain brain;
         public Transform visual;
@@ -50,19 +72,29 @@ namespace EchoShade
         float _yaw = 90f;
         Renderer[] _rs;
 
+        int _stamp;
+
         void Awake()
         {
-            Instance = this;
+            if (!All.Contains(this)) All.Add(this);
+            if (slot == 0 || !_primary) _primary = this;
             if (visual) _rs = visual.GetComponentsInChildren<Renderer>(true);
             Show(false);
         }
 
-        void OnDestroy() { if (Instance == this) Instance = null; }
+        void OnDestroy()
+        {
+            All.Remove(this);
+            if (_primary == this) _primary = null;
+            if (brain) { brain.OnRewindProcessed -= OnRewind; brain.OnTierChanged -= OnTier; }
+            var ph = PlayerHealth.Instance;
+            if (ph) ph.OnRespawned -= Despawn;
+        }
 
         void Start()
         {
             if (!brain) brain = NhipBrain.Instance;
-            if (brain) { brain.OnRewindProcessed += OnRewind; brain.OnTierChanged += OnTier; }
+            if (brain) { if (_primary == this) brain.OnRewindProcessed += OnRewind; brain.OnTierChanged += OnTier; }
             var lr = LevelRunner.Instance;
             if (lr && lr.data) speedFactor = lr.data.ghostSpeedFactor;
             var ph = PlayerHealth.Instance;
@@ -72,8 +104,38 @@ namespace EchoShade
         void OnRewind(List<TrailSample> seg)
         {
             if (brain.Tier < activeFromTier || seg == null || seg.Count < 2) return;
-            Spawn(seg);
+            var lr = LevelRunner.Instance;
+            int max = lr && lr.data ? Mathf.Max(1, lr.data.maxGhostRecordings) : 1;
+            if (KhangTrail.Instance) KhangTrail.Instance.StoreRecording(seg, max);
+            GhostPlayer target = this;
+            if (max > 1)
+            {
+                // Bong trong (chua hien) theo thu tu slot; het cho thi thay bong cu nhat.
+                GhostPlayer free = null, oldest = null;
+                int used = 0;
+                foreach (var g in All)
+                {
+                    if (!g || !g.isActiveAndEnabled || g.slot >= max) continue;
+                    used++;
+                    if (!g.Active) { if (!free || g.slot < free.slot) free = g; }
+                    else if (!oldest || g._stamp < oldest._stamp) oldest = g;
+                }
+                target = free ? free : oldest ? oldest : this;
+            }
+            target.Spawn(seg);
+            if (max > 1 && ActiveCount >= 2)
+            {
+                string two = lr && lr.data && !string.IsNullOrEmpty(lr.data.twoGhostLine) ? lr.data.twoGhostLine : "Hai đường. Tôi không biết đường nào là anh.";
+                TwoGhostLineCount++;
+                GameLog.Info($"[Anh vong] Hai ban ghi dang phat (slot {target.slot} vua nhan ban moi)");
+                if (HUD.Instance) HUD.Instance.ShowSubtitle(two, 5f, true);
+            }
         }
+
+        /// <summary>So lan thoai "hai duong" da phat (de kiem thu).</summary>
+        public static int TwoGhostLineCount { get; private set; }
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        static void ResetStatics() { All.Clear(); _primary = null; _stampCounter = 0; TwoGhostLineCount = 0; }
 
         void OnTier(int oldT, int newT) { if (newT < activeFromTier) Despawn(); }
 
@@ -85,9 +147,11 @@ namespace EchoShade
             Position = FeetAt(0);
             _graceOverlap = true; // luc xuat hien bong trung cho Khang: chua tinh la vat ran
             SpawnCount++;
+            _stamp = ++_stampCounter;
+            playbackBoost = 1f;
             Show(true);
             Place(Position, 0f);
-            Debug.Log($"[Anh vong] Xuat hien: {seg.Count} mau, x {seg[0].pos.x:0.0} -> {seg[seg.Count - 1].pos.x:0.0}, {seg[seg.Count - 1].rt:0.0}s thuc");
+            GameLog.Info($"[Anh vong #{slot}] Xuat hien: {seg.Count} mau, x {seg[0].pos.x:0.0} -> {seg[seg.Count - 1].pos.x:0.0}, {seg[seg.Count - 1].rt:0.0}s thuc");
             OnSpawned?.Invoke();
             var lr = LevelRunner.Instance;
             if (HUD.Instance)
@@ -99,10 +163,11 @@ namespace EchoShade
 
         public void Despawn()
         {
+            if (_primary == this && KhangTrail.Instance) KhangTrail.Instance.ClearRecordings();
             if (!Active) return;
             Active = false; BlockedBy = null; Finished = false;
             Show(false);
-            Debug.Log("[Anh vong] Bien mat");
+            GameLog.Info("[Anh vong] Bien mat");
         }
 
         Vector3 FeetAt(int i) { var p = _path[Mathf.Clamp(i, 0, _path.Count - 1)].pos; p.y += feetOffset; return p; }
@@ -140,13 +205,13 @@ namespace EchoShade
                 if (anchor)
                 {
                     BlockedBy = anchor;
-                    Debug.Log($"[Anh vong] Bi vat neo {anchor.name} chan tai x={Position.x:0.00}");
+                    GameLog.Info($"[Anh vong] Bi vat neo {anchor.name} chan tai x={Position.x:0.00}");
                     if (HUD.Instance) HUD.Instance.ShowSubtitle("Bóng va vào vật neo và đứng lại.", 3f, false);
                 }
                 else if (!WaitingForKhang)
                 {
                     _play = np; _idx = ni; Position = next;
-                    if (_idx >= _path.Count - 1) { Finished = true; Debug.Log("[Anh vong] Het quy dao"); }
+                    if (_idx >= _path.Count - 1) { Finished = true; GameLog.Info("[Anh vong] Het quy dao"); }
                 }
             }
             float vx = (Position.x - prev.x) / dt;
